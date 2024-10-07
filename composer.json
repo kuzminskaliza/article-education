@@ -1,0 +1,17 @@
+{
+    "name": "liza/article-education",
+    "require": {
+        "almasaeed2010/adminlte": "^3.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "Liza\\ArticleEducation\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Liza",
+            "email": "kuzminskaliza2017@gmail.com"
+        }
+    ]
+}
