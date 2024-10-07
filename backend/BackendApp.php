@@ -47,6 +47,7 @@ class BackendApp
                 if (method_exists($controller, $actionName)) {
                     echo $this->view->renderTemplate($this->config['params']['template_file'], [
                         'content' => $controller->$actionName(),
+                        'vendor_url' => $this->config['params']['vendor_url'] ?? '',
                         'title' => null,
                         'header' => null,
                     ]);

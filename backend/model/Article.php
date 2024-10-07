@@ -8,4 +8,9 @@ class Article
     private $title;
     private $description;
 
+
+    public function getAllArticle(): array
+    {
+        return [];
+    }
 }

@@ -1,6 +1,7 @@
 {
     "name": "liza/article-education",
     "require": {
+        "php": ">=8.3",
         "almasaeed2010/adminlte": "^3.2"
     },
     "autoload": {
