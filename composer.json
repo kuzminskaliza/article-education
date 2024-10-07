@@ -5,7 +5,9 @@
     },
     "autoload": {
         "psr-4": {
-            "Liza\\ArticleEducation\\": "src/"
+            "backend\\": "backend",
+            "frontend\\": "frontend",
+            "common\\": "common"
         }
     },
     "authors": [
