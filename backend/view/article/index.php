@@ -8,5 +8,4 @@ foreach ($articles as $article) {
         echo "<p>{$article['content']}</p>";
     }
 }
-?>
 
