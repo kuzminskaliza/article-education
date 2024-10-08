@@ -36,7 +36,7 @@ class BackendApp
             $parts = explode('/', $uri);
 
             // Якщо контролер не вказано, використовуємо дефолтний
-            $controllerName = self::CONTROLLER_NAMESPACE . ucfirst($parts[0] ?? self::DEFAULT_CONTROLLER) . 'Controller';
+            $controllerName = self::CONTROLLER_NAMESPACE . ucfirst(!empty($parts[0]) ? $parts[0] : self::DEFAULT_CONTROLLER) . 'Controller';
             $actionName = 'action' . ucfirst($parts[1] ?? self::DEFAULT_ACTION);
 
             // Перевіряємо чи існує клас контролера
