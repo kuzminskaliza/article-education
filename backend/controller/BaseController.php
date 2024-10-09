@@ -4,7 +4,7 @@ namespace backend\controller;
 
 use backend\view\BaseView;
 
-class BaseController
+abstract class BaseController
 {
     public function redirect(string $url, $code = 302): void
     {
