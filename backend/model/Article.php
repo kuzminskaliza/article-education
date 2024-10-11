@@ -48,6 +48,10 @@ class Article
 
     public function create(array $data): bool
     {
+        if (!file_exists(self::FILE_PATH)) {
+            file_put_contents(self::FILE_PATH, json_encode([]));
+        }
+
         $jsonData = file_get_contents(self::FILE_PATH);
         $dataArray = json_decode($jsonData, true);
 
