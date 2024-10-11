@@ -6,14 +6,14 @@ use backend\model\Article;
 
 class ArticleController extends BaseController
 {
-    private $article;
+    private Article $article;
 
     public function __construct()
     {
         $this->article = new Article();
     }
 
-    public function actionIndex()
+    public function actionIndex(): string
     {
         return $this->render('index', [
             'articles' => $this->article->getAll()
@@ -21,7 +21,7 @@ class ArticleController extends BaseController
     }
 
 
-    public function actionCreate()
+    public function actionCreate(): string
     {
         if ($_SERVER["REQUEST_METHOD"] == 'POST') {
             if ($this->article->create($_POST)) {
@@ -36,7 +36,8 @@ class ArticleController extends BaseController
         ]);
 
     }
-    public function actionUpdate()
+
+    public function actionUpdate(): string
     {
         $id = $_GET['id'];
         $article = $this->article->findId($id);
@@ -53,22 +54,24 @@ class ArticleController extends BaseController
         ]);
     }
 
-    public function actionView()
+    public function actionView(): string
     {
         $id = $_GET['id'];
         $article = $this->article->findId($id);
 
         return $this->render('view', [
-         'article' => $article,
+            'article' => $article,
         ]);
     }
 
-    public function actionDelete()
+    public function actionDelete(): void
     {
         $id = $_GET['id'];
 
-        if ($id && $this->article->deleteId($id)) {
-            $this->redirect('/article/index');
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['_method']) && $_POST['_method'] === 'DELETE') {
+            if ($id && $this->article->deleteId($id)) {
+                $this->redirect('/article/index');
+            }
         }
     }
 

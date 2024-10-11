@@ -28,9 +28,9 @@ use backend\model\Article;
                 <input
                         type="text"
                         id="inputName"
-                        class="form-control <?= $article->hasError('title') ? 'is-invalid' : 'is-valid'?>"
+                        class="form-control <?= $article->hasError('title') ? 'is-invalid' : 'is-valid' ?>"
                         name="title"
-                        value="<?= $article->getTitle() ?? ''?>">
+                        value="<?= $article->getTitle() ?? '' ?>">
 
                 <?php if ($article->hasError('title')): ?>
                     <div class="invalid-feedback">
@@ -41,10 +41,19 @@ use backend\model\Article;
             </div>
             <div class="form-group">
                 <label for="inputStatus">Status</label>
-                <select id="inputStatus" class="form-control custom-select <?= $article->hasError('status') ? 'is-invalid' : '' ?>" name="status">
+                <select id="inputStatus"
+                        class="form-control custom-select <?= $article->hasError('status') ? 'is-invalid' : 'is-valid' ?>"
+                        name="status">
                     <option selected="" disabled="">Select one</option>
-                    <option <?= $article->getStatus() == 'On Hold' ? 'selected' : '' ?>>In process</option>
-                    <option <?= $article->getStatus() == 'Success' ? 'selected' : '' ?>>Done</option>
+                    <option value="<?= Article::STATUS_NEW ?>" <?= $article->getStatus() == Article::STATUS_NEW ? 'selected' : '' ?>>
+                        New
+                    </option>
+                    <option value="<?= Article::STATUS_PUBLISHED ?>" <?= $article->getStatus() == Article::STATUS_PUBLISHED ? 'selected' : '' ?>>
+                        Published
+                    </option>
+                    <option value="<?= Article::STATUS_UNPUBLISHED ?>" <?= $article->getStatus() == Article::STATUS_UNPUBLISHED ? 'selected' : '' ?>>
+                        Unpublished
+                    </option>
                 </select>
                 <?php if ($article->hasError('status')): ?>
                     <div class="invalid-feedback">
@@ -55,11 +64,9 @@ use backend\model\Article;
             <div class="form-group">
                 <label for="inputDescription">Description</label>
                 <textarea id="inputDescription"
-                          class="form-control <?= $article->hasError('description') ? 'is-invalid' : '' ?>"
+                          class="form-control <?= $article->hasError('description') ? 'is-invalid' : 'is-valid' ?>"
                           rows="4"
-                          name="description"><?= $article->getDescription() ?? '' ?>
-                </textarea>
-
+                          name="description"><?= htmlspecialchars($article->getDescription() ?? '') ?></textarea>
                 <?php if ($article->hasError('description')): ?>
                     <div class="invalid-feedback">
                         <?= $article->getError('description') ?>

@@ -4,12 +4,21 @@ namespace backend\model;
 
 class Article
 {
-    const  FILE_PATH = __DIR__ . '/../../data/article.json';
-    private $id;
+    public const  string FILE_PATH = __DIR__ . '/../../data/article.json';
+    private int $id;
     private $title;
     private $status;
     private $description;
-    private $errors = [];
+    public const int STATUS_NEW = 1;
+    public const int STATUS_PUBLISHED = 2;
+    public const int STATUS_UNPUBLISHED = 3;
+
+    public const  array STATUSES = [
+        self::STATUS_NEW => 'New',
+        self::STATUS_PUBLISHED => 'Published',
+        self::STATUS_UNPUBLISHED => 'Unpublished',
+    ];
+    private array $errors = [];
 
     public function getAll(): array
     {
@@ -34,13 +43,20 @@ class Article
     public function validate(): bool
     {
         if (strlen($this->title) < 3 || strlen($this->title) > 255) {
-            $this->errors['title'] = 'Назва має бути від 3 до 255 символів';
+            $this->errors['title'] = 'Title is required';
         }
+
         if (empty($this->status)) {
-            $this->errors['status'] = 'Оберіть статус';
+            $this->errors['status'] = 'Select a status';
+        } else {
+            if (!in_array($this->status, [self::STATUS_NEW, self::STATUS_PUBLISHED, self::STATUS_UNPUBLISHED])) {
+                $this->errors['status'] = 'Incorrect status';
+            }
         }
+
+
         if (empty($this->description)) {
-            $this->errors['description'] = 'Опис не може бути порожнім';
+            $this->errors['description'] = 'Description is required';
         }
 
         return empty($this->errors);
@@ -135,10 +151,6 @@ class Article
         return null;
     }
 
-    public function getId()
-    {
-        return $this->id;
-    }
 
     public function getError($attribute)
     {
@@ -148,6 +160,11 @@ class Article
     public function hasError($attribute): bool
     {
         return array_key_exists($attribute, $this->errors);
+    }
+
+    public function getId(): int
+    {
+        return $this->id;
     }
 
     public function getTitle()

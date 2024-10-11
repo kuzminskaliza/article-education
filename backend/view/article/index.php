@@ -41,19 +41,34 @@ use backend\model\Article;
                 <tr>
                     <td><?= $article->getId() ?></td>
                     <td><?= $article->getTitle() ?></td>
-                    <td><?= $article->getDescription() ?></td>
-                    <td><?= $article->getStatus() ?></td>
+                    <td><?= mb_substr($article->getDescription(), 0, 100) . '...' ?></td>
+                    <td><?= $article::STATUSES[$article->getStatus()] ?></td>
                     <td class="project_progress"></td>
                     <td class="project-state"></td>
 
                     <td class="project-actions text-right">
 
-                        <a class="btn btn-primary btn-sm" href="/article/view?id=<?= $article->getId() ?>"><i
-                                    class="fas fa-folder"></i>Review</a>
-                        <a class="btn btn-info btn-sm" href="/article/update?id=<?= $article->getId() ?>"><i
-                                    class="fas fa-pencil-alt"></i>Edit</a>
-                        <a class="btn btn-danger btn-sm" href="/article/delete?id=<?= $article->getId() ?>"><i
-                                    class="fas fa-trash"></i>Delete</a>
+                        <a class="btn btn-primary btn-sm"
+                           href="/article/view?id=<?= $article->getId() ?>">
+                            <i class="fas fa-folder"> </i>
+                            <span style="margin-left: 5px;">View</span></a>
+
+                        <a class="btn btn-info btn-sm"
+                           style="background-color: chocolate; border-color: chocolate"
+                           href="/article/update?id=<?= $article->getId() ?>">
+                            <i class="fas fa-pencil-alt"> </i>
+                            <span style="margin-left: 5px;">Edit</span></a>
+
+                        <form action="/article/delete?id=<?= $article->getId() ?>" method="POST"
+                              style="display: inline;">
+                            <input type="hidden" name="_method" value="DELETE">
+                            <button type="submit" class="btn btn-danger btn-sm"
+                                    onclick="return confirm('Are you sure you want to delete the article?')">
+                                <i class="fas fa-trash"></i>
+                                <span style="margin-left: 5px;">Delete</span>
+                            </button>
+                        </form>
+
                     </td>
                 </tr>
             <?php endforeach; ?>

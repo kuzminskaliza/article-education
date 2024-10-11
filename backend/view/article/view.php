@@ -5,14 +5,22 @@ use backend\model\Article;
 /* @var Article $article */
 ?>
 
-
-<section class="content">
-    <div class="card">
-        <div class="card-header">
-            <h3 class="card-title">
-                <a href="/article/index" class="btn btn-block btn-info">Back</a>
-            </h3>
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1>View</h1>
+            </div>
         </div>
+    </div>
+</section>
+
+
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">
+            <a href="/article/index" class="btn btn-block btn-info">Back</a>
+        </h3>
     </div>
     <div class="card-body">
         <table class="table table-bordered table-hover" style="border: none;">
@@ -27,7 +35,7 @@ use backend\model\Article;
             </tr>
             <tr style="border: none;">
                 <td style="border: none;"><strong>Status:</strong></td>
-                <td style="border: none;"><?= $article->getStatus() ?></td>
+                <td style="border: none;"><?= $article::STATUSES[$article->getStatus()] ?></td>
             </tr>
             <tr style="border: none;">
                 <td style="border: none;"><strong>Description:</strong></td>
@@ -36,4 +44,5 @@ use backend\model\Article;
             </tbody>
         </table>
     </div>
-</section>
+</div>
+
