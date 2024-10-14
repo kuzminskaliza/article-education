@@ -33,7 +33,7 @@ use backend\model\Article;
                         name="title"
                         value="<?= $article->getTitle() ?? '' ?>">
 
-                <?php if ($article->hasError('title')): ?>
+                <?php if ($article->hasError('title')) : ?>
                     <div class="invalid-feedback">
                         <?= $article->getError('title') ?>
                     </div>
@@ -56,7 +56,7 @@ use backend\model\Article;
                         Unpublished
                     </option>
                 </select>
-                <?php if ($article->hasError('status')): ?>
+                <?php if ($article->hasError('status')) : ?>
                     <div class="invalid-feedback">
                         <?= $article->getError('status') ?>
                     </div>
@@ -67,7 +67,7 @@ use backend\model\Article;
                 <textarea id="inputDescription"
                           class="form-control <?= $article->hasError('description') ? 'is-invalid' : '' ?>" rows="4"
                           name="description"><?= $article->getDescription() ?? '' ?></textarea>
-                <?php if ($article->hasError('description')): ?>
+                <?php if ($article->hasError('description')) : ?>
                     <div class="invalid-feedback">
                         <?= $article->getError('description') ?>
                     </div>

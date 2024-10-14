@@ -51,7 +51,6 @@ class BackendApp
                         'title' => null,
                         'header' => null,
                     ]);
-
                 } else {
                     throw new Exception("Метод $actionName не знайдено у контролері $controllerName");
                 }

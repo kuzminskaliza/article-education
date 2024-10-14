@@ -5,19 +5,22 @@ namespace backend\model;
 class Article
 {
     public const  string FILE_PATH = __DIR__ . '/../../data/article.json';
+
     private int $id;
     private $title;
     private $status;
     private $description;
+
     public const int STATUS_NEW = 1;
     public const int STATUS_PUBLISHED = 2;
     public const int STATUS_UNPUBLISHED = 3;
 
-    public const  array STATUSES = [
+    public const array STATUSES = [
         self::STATUS_NEW => 'New',
         self::STATUS_PUBLISHED => 'Published',
         self::STATUS_UNPUBLISHED => 'Unpublished',
     ];
+
     private array $errors = [];
 
     public function getAll(): array
@@ -28,16 +31,14 @@ class Article
 
         foreach ($arrayData as $data) {
             $article = new self();
-            $article->id = $data['id'];
-            $article->status = $data['status'];
-            $article->title = $data['title'];
-            $article->description = $data['description'];
+            $article->id = (int)$data['id'];
+            $article->status = (int)$data['status'];
+            $article->title = (string)$data['title'];
+            $article->description = (string)$data['description'];
 
             $collection[] = $article;
         }
-
         return $collection;
-
     }
 
     public function validate(): bool
@@ -53,12 +54,9 @@ class Article
                 $this->errors['status'] = 'Incorrect status';
             }
         }
-
-
         if (empty($this->description)) {
             $this->errors['description'] = 'Description is required';
         }
-
         return empty($this->errors);
     }
 
@@ -72,12 +70,10 @@ class Article
         $dataArray = json_decode($jsonData, true);
 
         $this->id = $this->generateNewId($dataArray);
-        $this->status = $data['status'];
-        $this->title = $data['title'];
-        $this->description = $data['description'];
-
+        $this->status = (int)$data['status'];
+        $this->title = (string)$data['title'];
+        $this->description = (string)$data['description'];
         if ($this->validate()) {
-
             $dataArray[] = [
                 'id' => $this->id,
                 'title' => $this->title,
@@ -85,8 +81,7 @@ class Article
                 'description' => $this->description,
             ];
 
-            file_put_contents(self::FILE_PATH, json_encode($dataArray, JSON_PRETTY_PRINT));
-            return true;
+            return boolval(file_put_contents(self::FILE_PATH, json_encode($dataArray, JSON_PRETTY_PRINT)));
         }
 
         return false;
@@ -94,12 +89,9 @@ class Article
 
     public function update($id, $data): bool
     {
-
-        $this->status = $data['status'];
-        $this->title = $data['title'];
-        $this->description = $data['description'];
-
-
+        $this->status = (int)$data['status'];
+        $this->title = (string)$data['title'];
+        $this->description = (string)$data['description'];
         return $this->validate() && $this->save();
     }
 
@@ -113,14 +105,13 @@ class Article
         return $maxId + 1;
     }
 
-
     public function save(): bool
     {
         $jsonData = file_get_contents(self::FILE_PATH);
         $dataArray = json_decode($jsonData, true);
 
         foreach ($dataArray as &$data) {
-            if ($data['id'] == $this->id) {
+            if ($data['id'] === $this->id) {
                 $data['status'] = $this->status;
                 $data['title'] = $this->title;
                 $data['description'] = $this->description;
@@ -128,12 +119,10 @@ class Article
             }
         }
 
-        file_put_contents(self::FILE_PATH, json_encode($dataArray, JSON_PRETTY_PRINT));
-
-        return true;
+        return boolval(file_put_contents(self::FILE_PATH, json_encode($dataArray, JSON_PRETTY_PRINT)));
     }
 
-    public function findId($id): ?Article
+    public function findId(int $id): ?Article
     {
         $jsonData = file_get_contents(self::FILE_PATH);
         $dataArray = json_decode($jsonData, true);
@@ -151,13 +140,12 @@ class Article
         return null;
     }
 
-
-    public function getError($attribute)
+    public function getError(string $attribute): ?string
     {
-        return $this->errors[$attribute];
+        return $this->errors[$attribute] ?? null;
     }
 
-    public function hasError($attribute): bool
+    public function hasError(string $attribute): bool
     {
         return array_key_exists($attribute, $this->errors);
     }
@@ -167,23 +155,22 @@ class Article
         return $this->id;
     }
 
-    public function getTitle()
+    public function getTitle(): ?string
     {
         return $this->title;
     }
 
-    public function getStatus()
+    public function getStatus(): ?int
     {
         return $this->status;
     }
 
-
-    public function getDescription()
+    public function getDescription(): ?string
     {
         return $this->description;
     }
 
-    public function deleteId($id): bool
+    public function deleteId(int $id): bool
     {
         $jsonData = file_get_contents(self::FILE_PATH);
         $dataArray = json_decode($jsonData, true);
@@ -201,5 +188,4 @@ class Article
 
         return false;
     }
-
 }

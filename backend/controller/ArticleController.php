@@ -20,21 +20,18 @@ class ArticleController extends BaseController
         ]);
     }
 
-
     public function actionCreate(): string
     {
         if ($_SERVER["REQUEST_METHOD"] == 'POST') {
             if ($this->article->create($_POST)) {
                 $this->redirect('/article/index');
             }
-
         }
 
         return $this->render('create', [
             'article' => $this->article,
 
         ]);
-
     }
 
     public function actionUpdate(): string
@@ -67,12 +64,12 @@ class ArticleController extends BaseController
     public function actionDelete(): void
     {
         $id = $_GET['id'];
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            return;
+        }
 
-        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['_method']) && $_POST['_method'] === 'DELETE') {
-            if ($id && $this->article->deleteId($id)) {
-                $this->redirect('/article/index');
-            }
+        if ($id && $this->article->deleteId($id)) {
+            $this->redirect('/article/index');
         }
     }
-
 }

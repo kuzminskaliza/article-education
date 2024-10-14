@@ -1,9 +1,9 @@
 <?php
+
 namespace backend\view;
 
 class BaseView
 {
-
     /**
      * @param string $template
      * @param array $variables
@@ -23,5 +23,4 @@ class BaseView
         // Повертаємо відрендерений контент
         return ob_get_clean();
     }
-
 }

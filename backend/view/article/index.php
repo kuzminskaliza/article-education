@@ -37,11 +37,11 @@ use backend\model\Article;
             </thead>
 
             <tbody>
-            <?php foreach ($articles as $article): ?>
+            <?php foreach ($articles as $article) : ?>
                 <tr>
                     <td><?= $article->getId() ?></td>
                     <td><?= $article->getTitle() ?></td>
-                    <td><?= mb_substr($article->getDescription(), 0, 100) . '...' ?></td>
+                    <td class="text-truncate modal-sm"><?= $article->getDescription(); ?></td>
                     <td><?= $article::STATUSES[$article->getStatus()] ?></td>
                     <td class="project_progress"></td>
                     <td class="project-state"></td>
@@ -51,24 +51,21 @@ use backend\model\Article;
                         <a class="btn btn-primary btn-sm"
                            href="/article/view?id=<?= $article->getId() ?>">
                             <i class="fas fa-folder"> </i>
-                            <span style="margin-left: 5px;">View</span></a>
+                            <span>View</span></a>
 
-                        <a class="btn btn-info btn-sm"
-                           style="background-color: chocolate; border-color: chocolate"
+                        <a class="btn btn-warning btn-sm"
                            href="/article/update?id=<?= $article->getId() ?>">
-                            <i class="fas fa-pencil-alt"> </i>
-                            <span style="margin-left: 5px;">Edit</span></a>
+                            <i class="fas fa-pencil-alt"></i>
+                            <span>Edit</span></a>
 
                         <form action="/article/delete?id=<?= $article->getId() ?>" method="POST"
-                              style="display: inline;">
-                            <input type="hidden" name="_method" value="DELETE">
+                             class="d-xl-inline-block">
                             <button type="submit" class="btn btn-danger btn-sm"
                                     onclick="return confirm('Are you sure you want to delete the article?')">
                                 <i class="fas fa-trash"></i>
-                                <span style="margin-left: 5px;">Delete</span>
+                                <span>Delete</span>
                             </button>
                         </form>
-
                     </td>
                 </tr>
             <?php endforeach; ?>

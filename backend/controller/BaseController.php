@@ -26,5 +26,4 @@ class BaseController
             return 'File not found --  ' . __DIR__;
         }
     }
-
 }
