@@ -3,6 +3,7 @@
 namespace backend\controller;
 
 use backend\model\Article;
+use Exception;
 
 class ArticleController extends BaseController
 {
@@ -36,12 +37,13 @@ class ArticleController extends BaseController
 
     public function actionUpdate(): string
     {
-        $id = $_GET['id'];
-        $article = $this->article->findId($id);
-
-
+        try {
+            $article = $this->findModel();
+        } catch (Exception $exception) {
+            return $this->render('error/404', ['message' => $exception->getMessage()]);
+        }
         if ($_SERVER["REQUEST_METHOD"] == 'POST') {
-            if ($article->update($id, $_POST)) {
+            if ($article->update($_POST)) {
                 $this->redirect('/article/index');
             }
         }
@@ -53,23 +55,46 @@ class ArticleController extends BaseController
 
     public function actionView(): string
     {
-        $id = $_GET['id'];
-        $article = $this->article->findId($id);
+        try {
+            $article = $this->findModel();
+        } catch (Exception $exception) {
+            return $this->render('error/404', ['message' => $exception->getMessage()]);
+        }
 
         return $this->render('view', [
             'article' => $article,
         ]);
     }
 
-    public function actionDelete(): void
+    public function actionDelete(): string
     {
-        $id = $_GET['id'];
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            return;
+            return $this->render('error/405', ['message' => '']);
+        }
+        try {
+            $article = $this->findModel();
+        } catch (Exception $exception) {
+            return $this->render('error/404', ['message' => $exception->getMessage()]);
         }
 
-        if ($id && $this->article->deleteId($id)) {
+        $article->delete();
             $this->redirect('/article/index');
+        return '';
+    }
+
+    /**
+     * @throws Exception
+     */
+    private function findModel(): Article
+    {
+        $id = (int)$_GET['id'];
+        if (!$id) {
+            throw new Exception('Not found Article');
         }
+        $article = $this->article->findId($id);
+        if (!$article) {
+            throw new Exception('Not found Article');
+        }
+        return $article;
     }
 }

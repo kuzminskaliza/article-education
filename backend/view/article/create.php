@@ -45,15 +45,11 @@ use backend\model\Article;
                         class="form-control custom-select <?= $article->hasError('status') ? 'is-invalid' : 'is-valid' ?>"
                         name="status">
                     <option selected="" disabled="">Select one</option>
-                    <option value="<?= Article::STATUS_NEW ?>" <?= $article->getStatus() == Article::STATUS_NEW ? 'selected' : '' ?>>
-                        New
-                    </option>
-                    <option value="<?= Article::STATUS_PUBLISHED ?>" <?= $article->getStatus() == Article::STATUS_PUBLISHED ? 'selected' : '' ?>>
-                        Published
-                    </option>
-                    <option value="<?= Article::STATUS_UNPUBLISHED ?>" <?= $article->getStatus() == Article::STATUS_UNPUBLISHED ? 'selected' : '' ?>>
-                        Unpublished
-                    </option>
+                    <?php foreach (Article::STATUSES as $status => $label) : ?>
+                        <option value="<?= $status ?>" <?= $article->getStatus() == $status ? 'selected' : '' ?>>
+                            <?= $label ?>
+                        </option>
+                    <?php endforeach; ?>
                 </select>
                 <?php if ($article->hasError('status')) : ?>
                     <div class="invalid-feedback">

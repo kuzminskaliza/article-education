@@ -4,13 +4,7 @@ namespace backend\model;
 
 class Article
 {
-    public const  string FILE_PATH = __DIR__ . '/../../data/article.json';
-
-    private int $id;
-    private $title;
-    private $status;
-    private $description;
-
+    public const string FILE_PATH = __DIR__ . '/../../data/article.json';
     public const int STATUS_NEW = 1;
     public const int STATUS_PUBLISHED = 2;
     public const int STATUS_UNPUBLISHED = 3;
@@ -21,10 +15,22 @@ class Article
         self::STATUS_UNPUBLISHED => 'Unpublished',
     ];
 
+    private int $id;
+    private ?string $title;
+    private ?int $status;
+    private ?string $description;
     private array $errors = [];
+
+    public function __construct()
+    {
+        $this->title = $this->status = $this->description = null;
+    }
 
     public function getAll(): array
     {
+        if (!file_exists(self::FILE_PATH)) {
+            return [];
+        }
         $jsonData = file_get_contents(self::FILE_PATH);
         $arrayData = json_decode($jsonData, true);
         $collection = [];
@@ -50,7 +56,7 @@ class Article
         if (empty($this->status)) {
             $this->errors['status'] = 'Select a status';
         } else {
-            if (!in_array($this->status, [self::STATUS_NEW, self::STATUS_PUBLISHED, self::STATUS_UNPUBLISHED])) {
+            if (!array_key_exists($this->status, self::STATUSES)) {
                 $this->errors['status'] = 'Incorrect status';
             }
         }
@@ -87,12 +93,29 @@ class Article
         return false;
     }
 
-    public function update($id, $data): bool
+    public function update(array $data): bool
     {
         $this->status = (int)$data['status'];
         $this->title = (string)$data['title'];
         $this->description = (string)$data['description'];
-        return $this->validate() && $this->save();
+
+        if ($this->validate()) {
+            $jsonData = file_get_contents(self::FILE_PATH);
+            $dataArray = json_decode($jsonData, true);
+
+            foreach ($dataArray as &$data) {
+                if ($data['id'] === $this->id) {
+                    $data['status'] = $this->status;
+                    $data['title'] = $this->title;
+                    $data['description'] = $this->description;
+                    break;
+                }
+            }
+
+            return boolval(file_put_contents(self::FILE_PATH, json_encode($dataArray, JSON_PRETTY_PRINT)));
+        }
+
+        return false;
     }
 
     private function generateNewId(array $dataArray): int
@@ -103,23 +126,6 @@ class Article
 
         $maxId = max(array_column($dataArray, 'id'));
         return $maxId + 1;
-    }
-
-    public function save(): bool
-    {
-        $jsonData = file_get_contents(self::FILE_PATH);
-        $dataArray = json_decode($jsonData, true);
-
-        foreach ($dataArray as &$data) {
-            if ($data['id'] === $this->id) {
-                $data['status'] = $this->status;
-                $data['title'] = $this->title;
-                $data['description'] = $this->description;
-                break;
-            }
-        }
-
-        return boolval(file_put_contents(self::FILE_PATH, json_encode($dataArray, JSON_PRETTY_PRINT)));
     }
 
     public function findId(int $id): ?Article
@@ -170,22 +176,19 @@ class Article
         return $this->description;
     }
 
-    public function deleteId(int $id): bool
+    public function delete(): bool
     {
         $jsonData = file_get_contents(self::FILE_PATH);
         $dataArray = json_decode($jsonData, true);
 
-
         foreach ($dataArray as $index => $data) {
-            if ($data['id'] == $id) {
+            if ($data['id'] == $this->id) {
                 unset($dataArray[$index]);
                 $dataArray = array_values($dataArray);
 
-                file_put_contents(self::FILE_PATH, json_encode($dataArray, JSON_PRETTY_PRINT));
-                return true;
+                return boolval(file_put_contents(self::FILE_PATH, json_encode($dataArray, JSON_PRETTY_PRINT)));
             }
         }
-
         return false;
     }
 }

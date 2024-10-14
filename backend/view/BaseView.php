@@ -9,7 +9,7 @@ class BaseView
      * @param array $variables
      * @return false|string
      */
-    function renderTemplate(string $template, array $variables = []): false|string
+    public function renderTemplate(string $template, array $variables = []): false|string
     {
         // Розпаковуємо змінні, щоб їх можна було використовувати в шаблоні
         extract($variables);
