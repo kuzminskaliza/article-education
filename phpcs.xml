@@ -1,0 +1,92 @@
+<?xml version="1.0"?>
+<ruleset name="PSR12">
+  <description>The PSR12 coding standard.</description>
+  <rule ref="PSR12">
+    <exclude-pattern>*/tests/*</exclude-pattern>
+  </rule>
+  <rule ref="Generic.Files.LineLength">
+    <properties>
+      <property name="lineLimit" value="500"/>
+      <property name="absoluteLineLimit" value="0"/>
+    </properties>
+  </rule>
+  <config name="installed_paths" value="../../slevomat/coding-standard"/>
+  <rule ref="SlevomatCodingStandard.Namespaces.UseFromSameNamespace"/>
+  <rule ref="SlevomatCodingStandard.Namespaces.UselessAlias"/>
+  <rule ref="SlevomatCodingStandard.Variables.DuplicateAssignmentToVariable"/>
+  <!--    <rule ref="SlevomatCodingStandard.Variables.UselessVariable"/>-->
+  <rule ref="SlevomatCodingStandard.Exceptions.DeadCatch"/>
+  <rule ref="SlevomatCodingStandard.ControlStructures.RequireNullCoalesceOperator"/>
+  <rule ref="SlevomatCodingStandard.ControlStructures.RequireNullCoalesceEqualOperator"/>
+
+  <rule
+    ref="SlevomatCodingStandard.Arrays.SingleLineArrayWhitespace"/><!-- пробелы междуж элементами в однострочном массиве-->
+  <rule ref="SlevomatCodingStandard.Classes.ClassMemberSpacing"/><!-- не больше одной пустой строка между членами-->
+  <rule ref="SlevomatCodingStandard.Classes.ConstantSpacing"/><!--одинаковые отступы между членами-->
+  <rule ref="SlevomatCodingStandard.Classes.MethodSpacing"/><!--один отступ между методами-->
+  <rule
+    ref="SlevomatCodingStandard.Classes.ModernClassNameReference"/><!--замена get_class() и __CLASS__ на static::class-->
+  <rule ref="SlevomatCodingStandard.Classes.ParentCallSpacing"/><!--отделение parent::someMethod() отступами-->
+  <rule
+    ref="SlevomatCodingStandard.Classes.PropertySpacing"/><!-- отступ между свойством и phpdoc следующего свойства-->
+  <rule
+    ref="SlevomatCodingStandard.Classes.RequireMultiLineMethodSignature"><!--многострочная сигнатура аргуметов метода-->
+    <properties>
+      <property name="minLineLength" value="141"/>
+    </properties>
+  </rule>
+  <rule ref="SlevomatCodingStandard.Commenting.ForbiddenAnnotations"><!--забытые\ненужные аннотации в PhpDoc-->
+    <properties>
+      <property name="forbiddenAnnotations" type="array">
+        <element value="@author"/>
+        <element value="@created"/>
+        <element value="@copyright"/>
+        <element value="@license"/>
+        <element value="@package"/>
+        <element value="@version"/>
+      </property>
+    </properties>
+  </rule>
+
+<!--  <rule ref="SlevomatCodingStandard.Commenting.UselessFunctionDocComment">&lt;!&ndash; удаление ненужных\неправильных PhpDoc&ndash;&gt;-->
+<!--    <properties>-->
+<!--      <property name="enableObjectTypeHint" value="false" type="bool"/>-->
+<!--    </properties>-->
+<!--  </rule>-->
+  <!--    <rule ref="SlevomatCodingStandard.ControlStructures.AssignmentInCondition"/>&lt;!&ndash;присвоение в условиях&ndash;&gt;-->
+
+  <!--отделение отступами блоков кода (tray...cathc и тп)-->
+  <rule ref="SlevomatCodingStandard.ControlStructures.BlockControlStructureSpacing">
+    <exclude name="SlevomatCodingStandard.ControlStructures.BlockControlStructureSpacing"/>
+  </rule>
+
+  <rule ref="PSR12.Classes.OpeningBraceSpace">
+    <exclude name="PSR12.Classes.OpeningBraceSpace"/>
+  </rule>
+
+  <rule ref="SlevomatCodingStandard.ControlStructures.EarlyExit"><!-- ранний возврат вместо else-->
+    <properties>
+      <property name="ignoreStandaloneIfInScope" value="true"/>
+      <property name="ignoreOneLineTrailingIf" value="true"/>
+    </properties>
+  </rule>
+  <rule ref="SlevomatCodingStandard.Functions.DisallowEmptyFunction"/>
+  <rule ref="SlevomatCodingStandard.Functions.StaticClosure"/>
+  <rule ref="SlevomatCodingStandard.Namespaces.AlphabeticallySortedUses">
+    <properties>
+      <property name="caseSensitive" value="false"/>
+    </properties>
+  </rule>
+  <rule ref="SlevomatCodingStandard.PHP.UselessParentheses"/>
+  <rule ref="SlevomatCodingStandard.PHP.UselessSemicolon"/><!--лишняя точка с запятой-->
+  <rule ref="SlevomatCodingStandard.Variables.UnusedVariable">
+    <exclude-pattern>*/_bootstrap.php</exclude-pattern>
+  </rule>
+  <rule ref="SlevomatCodingStandard.TypeHints.UselessConstantTypeHint"/><!--излишний тип в PhpDoc констант-->
+
+  <rule ref="Generic.NamingConventions.UpperCaseConstantName">
+    <exclude name="Generic.NamingConventions.UpperCaseConstantName"/>
+  </rule>
+
+  <file>./backend</file>
+</ruleset>
