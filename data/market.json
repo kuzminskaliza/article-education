@@ -1,0 +1,30 @@
+[
+    {
+        "id": 1,
+        "title": "Rozetka marklet",
+        "description": "Top shop",
+        "status": "active",
+        "company": "Rozekta"
+    },
+    {
+        "id": 2,
+        "status": "Canceled",
+        "title": "asdfasdfasdfsadfasd",
+        "description": "fasdfasdfasdf",
+        "company": "asdfasdfasdasasdf"
+    },
+    {
+        "id": 3,
+        "status": "On Hold",
+        "title": "asdasdfasdf",
+        "description": "asdfasdf",
+        "company": "asdfasdfasdf"
+    },
+    {
+        "id": 4,
+        "status": null,
+        "title": "LIxa SHOP OOOO",
+        "description": "asdasdasdasd",
+        "company": "asdfasdfasdasasdf"
+    }
+]
