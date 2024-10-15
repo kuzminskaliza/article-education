@@ -69,7 +69,7 @@ class ArticleController extends BaseController
     public function actionDelete(): string
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            return $this->render('error/405', ['message' => '']);
+            return $this->render('error/405');
         }
         try {
             $article = $this->findModel();
@@ -78,7 +78,7 @@ class ArticleController extends BaseController
         }
 
         $article->delete();
-            $this->redirect('/article/index');
+        $this->redirect('/article/index');
         return '';
     }
 
