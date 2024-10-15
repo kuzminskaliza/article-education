@@ -22,9 +22,8 @@ class BaseController
 
         if (file_exists($viewFilePath)) {
             return $view->renderTemplate($viewFilePath, $params);
-        } else {
-            return 'File not found --  ' . __DIR__;
         }
-    }
 
+        return 'File not found --  ' . __DIR__;
+    }
 }

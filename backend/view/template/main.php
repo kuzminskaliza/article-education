@@ -16,20 +16,22 @@
     <title>AdminLTE 3 | Dashboard 2</title>
 
     <!-- Google Font: Source Sans Pro -->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
     <!-- Font Awesome Icons -->
-    <link rel="stylesheet" href="<?= $vendor_url;?>plugins/fontawesome-free/css/all.min.css">
+    <link rel="stylesheet" href="<?= $vendor_url; ?>plugins/fontawesome-free/css/all.min.css">
     <!-- overlayScrollbars -->
-    <link rel="stylesheet" href="<?= $vendor_url;?>plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
+    <link rel="stylesheet" href="<?= $vendor_url; ?>plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
     <!-- Theme style -->
-    <link rel="stylesheet" href="<?= $vendor_url;?>dist/css/adminlte.min.css">
+    <link rel="stylesheet" href="<?= $vendor_url; ?>dist/css/adminlte.min.css">
 </head>
 <body class="hold-transition dark-mode sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
 <div class="wrapper">
 
     <!-- Preloader -->
     <div class="preloader flex-column justify-content-center align-items-center">
-        <img class="animation__wobble" src="<?= $vendor_url;?>dist/img/AdminLTELogo.png" alt="AdminLTELogo" height="60" width="60">
+        <img class="animation__wobble" src="<?= $vendor_url; ?>dist/img/AdminLTELogo.png" alt="AdminLTELogo" height="60"
+             width="60">
     </div>
 
     <!-- Navbar -->
@@ -40,7 +42,7 @@
                 <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
             </li>
             <li class="nav-item d-none d-sm-inline-block">
-                <a href="/article/index" class="nav-link">Home</a>
+                <a href="/index/index" class="nav-link">Home</a>
             </li>
         </ul>
     </nav>
@@ -50,7 +52,8 @@
     <aside class="main-sidebar sidebar-dark-primary elevation-4">
         <!-- Brand Logo -->
         <a href="index3.html" class="brand-link">
-            <img src="<?= $vendor_url;?>dist/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
+            <img src="<?= $vendor_url; ?>dist/img/AdminLTELogo.png" alt="AdminLTE Logo"
+                 class="brand-image img-circle elevation-3" style="opacity: .8">
             <span class="brand-text font-weight-light">Article Education</span>
         </a>
 
@@ -58,31 +61,14 @@
         <div class="sidebar">
             <!-- Sidebar Menu -->
             <nav class="mt-2">
-                <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+                <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
+                    data-accordion="false">
                     <!-- Add icons to the links using the .nav-icon class
                          with font-awesome or any other icon font library -->
                     <li class="nav-item">
-                        <a href="pages/examples/projects.html" class="nav-link">
+                        <a href="/article/index" class="nav-link">
                             <i class="far fa-circle nav-icon"></i>
                             <p>Projects</p>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="pages/examples/project-add.html" class="nav-link">
-                            <i class="far fa-circle nav-icon"></i>
-                            <p>Project Add</p>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="pages/examples/project-edit.html" class="nav-link">
-                            <i class="far fa-circle nav-icon"></i>
-                            <p>Project Edit</p>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="pages/examples/project-detail.html" class="nav-link">
-                            <i class="far fa-circle nav-icon"></i>
-                            <p>Project Detail</p>
                         </a>
                     </li>
                 </ul>
@@ -113,26 +99,23 @@
 
 <!-- REQUIRED SCRIPTS -->
 <!-- jQuery -->
-<script src="<?= $vendor_url;?>plugins/jquery/jquery.min.js"></script>
+<script src="<?= $vendor_url; ?>plugins/jquery/jquery.min.js"></script>
 <!-- Bootstrap -->
-<script src="<?= $vendor_url;?>plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="<?= $vendor_url; ?>plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 <!-- overlayScrollbars -->
-<script src="<?= $vendor_url;?>plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
+<script src="<?= $vendor_url; ?>plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
 <!-- AdminLTE App -->
-<script src="<?= $vendor_url;?>dist/js/adminlte.js"></script>
+<script src="<?= $vendor_url; ?>dist/js/adminlte.js"></script>
 
 <!-- PAGE PLUGINS -->
 <!-- jQuery Mapael -->
-<script src="<?= $vendor_url;?>plugins/jquery-mousewheel/jquery.mousewheel.js"></script>
-<script src="<?= $vendor_url;?>plugins/raphael/raphael.min.js"></script>
-<script src="<?= $vendor_url;?>plugins/jquery-mapael/jquery.mapael.min.js"></script>
-<script src="<?= $vendor_url;?>plugins/jquery-mapael/maps/usa_states.min.js"></script>
+<script src="<?= $vendor_url; ?>plugins/jquery-mousewheel/jquery.mousewheel.js"></script>
+<script src="<?= $vendor_url; ?>plugins/raphael/raphael.min.js"></script>
+<script src="<?= $vendor_url; ?>plugins/jquery-mapael/jquery.mapael.min.js"></script>
+<script src="<?= $vendor_url; ?>plugins/jquery-mapael/maps/usa_states.min.js"></script>
 <!-- ChartJS -->
-<script src="<?= $vendor_url;?>plugins/chart.js/Chart.min.js"></script>
+<script src="<?= $vendor_url; ?>plugins/chart.js/Chart.min.js"></script>
 
-<!-- AdminLTE for demo purposes -->
-<script src="<?= $vendor_url;?>dist/js/demo.js"></script>
-<!-- AdminLTE dashboard demo (This is only for demo purposes) -->
-<script src="<?= $vendor_url;?>dist/js/pages/dashboard2.js"></script>
+<script src="<?= $vendor_url; ?>dist/js/pages/dashboard2.js"></script>
 </body>
 </html>

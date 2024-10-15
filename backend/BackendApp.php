@@ -10,6 +10,7 @@ class BackendApp
     private const string DEFAULT_CONTROLLER = 'index';
     private const string DEFAULT_ACTION = 'index';
     private const string CONTROLLER_NAMESPACE = 'backend\\controller\\';
+
     private array $config;
     private BaseView $view;
 
@@ -40,24 +41,23 @@ class BackendApp
             $actionName = 'action' . ucfirst($parts[1] ?? self::DEFAULT_ACTION);
 
             // Перевіряємо чи існує клас контролера
-            if (class_exists($controllerName)) {
-                $controller = new $controllerName();
-
-                // Перевіряємо чи існує метод у контролері
-                if (method_exists($controller, $actionName)) {
-                    echo $this->view->renderTemplate($this->config['params']['template_file'], [
-                        'content' => $controller->$actionName(),
-                        'vendor_url' => $this->config['params']['vendor_url'] ?? '',
-                        'title' => null,
-                        'header' => null,
-                    ]);
-
-                } else {
-                    throw new Exception("Метод $actionName не знайдено у контролері $controllerName");
-                }
-            } else {
+            if (!class_exists($controllerName)) {
                 throw new Exception("Контролер $controllerName не знайдено");
             }
+
+            $controller = new $controllerName();
+
+            // Перевіряємо чи існує метод у контролері
+            if (!method_exists($controller, $actionName)) {
+                throw new Exception("Метод $actionName не знайдено у контролері $controllerName");
+            }
+
+            echo $this->view->renderTemplate($this->config['params']['template_file'], [
+                'content' => $controller->$actionName(),
+                'vendor_url' => $this->config['params']['vendor_url'] ?? '',
+                'title' => null,
+                'header' => null,
+            ]);
         } catch (Exception $exception) {
             // Обробка помилки
             echo 'Помилка сервера: ' . $exception->getMessage();
