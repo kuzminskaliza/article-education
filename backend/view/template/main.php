@@ -1,5 +1,7 @@
 <?php
 
+use backend\model\Admin;
+
 /* @var string $title */
 /* @var string $header */
 /* @var string $content */
@@ -59,6 +61,17 @@
 
         <!-- Sidebar -->
         <div class="sidebar">
+            <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+                <div class="image"></div>
+                <div class="info">
+                    <?php $admin = Admin::getAuthAdmin(); ?>
+                    <?php if ($admin) : ?>
+                        <span class="d-block"><?= $admin->getName() ?></span>
+                        <span class="d-block"><?= $admin->getEmail() ?></span>
+                    <?php endif; ?>
+                    <a href="/admin/logout" class="d-block">Logout</a>
+                </div>
+            </div>
             <!-- Sidebar Menu -->
             <nav class="mt-2">
                 <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
