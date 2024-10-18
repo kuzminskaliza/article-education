@@ -2,6 +2,8 @@
 
 namespace backend;
 
+use backend\controller\AdminController;
+use backend\model\Admin;
 use backend\view\BaseView;
 use Exception;
 
@@ -19,6 +21,7 @@ class BackendApp
      */
     public function __construct(array $config)
     {
+        session_start();
         $this->config = $config;
         $this->view = new BaseView();
     }
@@ -40,6 +43,19 @@ class BackendApp
             $controllerName = self::CONTROLLER_NAMESPACE . ucfirst(!empty($parts[0]) ? $parts[0] : self::DEFAULT_CONTROLLER) . 'Controller';
             $actionName = 'action' . ucfirst($parts[1] ?? self::DEFAULT_ACTION);
 
+            $admin = Admin::getAuthAdmin();
+            if (!$admin && $controllerName !== AdminController::class) {
+                $controller = new AdminController();
+                $controller->redirect('/admin/login');
+                return;
+            }
+
+            if ($admin && $controllerName === AdminController::class && $actionName !== 'actionLogout') {
+                $controller = new AdminController();
+                $controller->redirect('/index/index');
+                return;
+            }
+
             // Перевіряємо чи існує клас контролера
             if (!class_exists($controllerName)) {
                 throw new Exception("Контролер $controllerName не знайдено");
@@ -51,13 +67,19 @@ class BackendApp
             if (!method_exists($controller, $actionName)) {
                 throw new Exception("Метод $actionName не знайдено у контролері $controllerName");
             }
-
-            echo $this->view->renderTemplate($this->config['params']['template_file'], [
-                'content' => $controller->$actionName(),
-                'vendor_url' => $this->config['params']['vendor_url'] ?? '',
-                'title' => null,
-                'header' => null,
-            ]);
+            if ($admin) {
+                echo $this->view->renderTemplate($this->config['params']['template_file'], [
+                    'content' => $controller->$actionName(),
+                    'vendor_url' => $this->config['params']['vendor_url'] ?? '',
+                    'title' => null,
+                    'header' => null,
+                ]);
+            } else {
+                echo $this->view->renderTemplate($this->config['params']['template_form_register'], [
+                    'content' => $controller->$actionName(),
+                    'vendor_url' => $this->config['params']['vendor_url'] ?? '',
+                ]);
+            }
         } catch (Exception $exception) {
             // Обробка помилки
             echo 'Помилка сервера: ' . $exception->getMessage();
