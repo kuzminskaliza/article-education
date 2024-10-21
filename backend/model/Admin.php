@@ -6,12 +6,17 @@ class Admin
 {
     public const string FILE_PATH = __DIR__ . '/../../data/admin.json';
 
-    private string $name;
+    private ?string $name;
     private int $id;
-    private string $email;
-    private string $password;
-    private string $confirm_password;
+    private ?string $email;
+    private ?string $password;
+    private ?string $confirm_password;
     private array $errors = [];
+
+    public function __construct()
+    {
+        $this->name = $this->email = $this->password = $this->confirm_password = null;
+    }
 
     public function register(array $data): bool
     {
@@ -148,7 +153,6 @@ class Admin
 
     public function destroySession(): void
     {
-        session_start();
         session_unset();
         session_destroy();
     }
@@ -173,12 +177,12 @@ class Admin
         return array_key_exists($attribute, $this->errors);
     }
 
-    public function getName(): string
+    public function getName(): ?string
     {
         return $this->name;
     }
 
-    public function getEmail(): string
+    public function getEmail(): ?string
     {
         return $this->email;
     }

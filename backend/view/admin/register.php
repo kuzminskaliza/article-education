@@ -17,7 +17,8 @@ use backend\model\Admin;
                     <input type="text"
                            name="name"
                            class="form-control <?= $admin->hasError('name') ? 'is-invalid' : 'is-valid' ?>"
-                           placeholder="Full name">
+                           placeholder="Full name"
+                           value="<?= $admin->getName() ?? '' ?>">
                     <div class="input-group-append">
                         <div class="input-group-text">
                             <span class="fas fa-user"></span>
@@ -33,7 +34,8 @@ use backend\model\Admin;
                     <input type="email"
                            name="email"
                            class="form-control <?= $admin->hasError('email') ? 'is-invalid' : 'is-valid' ?>"
-                           placeholder="Email">
+                           placeholder="Email"
+                           value="<?= $admin->getEmail() ?? '' ?>">
                     <div class="input-group-append">
                         <div class="input-group-text">
                             <span class="fas fa-envelope"></span>
@@ -78,28 +80,11 @@ use backend\model\Admin;
                     <?php endif; ?>
                 </div>
                 <div class="row">
-                    <div class="col-8">
-                        <div class="icheck-primary">
-                            <input type="checkbox" id="agreeTerms" name="terms" value="agree">
-                            <label for="agreeTerms">
-                                I agree to the <a href="#">terms</a>
-                            </label>
-                        </div>
-                    </div>
-                    <!-- /.col -->
                     <div class="col-4">
                         <button type="submit" class="btn btn-primary btn-block">Register</button>
                     </div>
-                    <!-- /.col -->
                 </div>
             </form>
-            <div class="social-auth-links text-center">
-                <a href="#" class="btn btn-block btn-danger">
-                    <i class="fab fa-google-plus mr-2"></i>
-                    Sign up using Google+
-                </a>
-            </div>
-
             <a href="/admin/login" class="text-center">I already have a membership</a>
         </div>
         <!-- /.form-box -->
