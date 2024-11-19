@@ -2,7 +2,8 @@
     "name": "liza/article-education",
     "require": {
         "php": ">=8.3",
-        "almasaeed2010/adminlte": "^3.2"
+        "almasaeed2010/adminlte": "^3.2",
+      "ext-pdo": "*"
     },
     "autoload": {
         "psr-4": {
