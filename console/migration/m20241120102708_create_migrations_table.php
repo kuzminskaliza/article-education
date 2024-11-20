@@ -2,7 +2,7 @@
 
 use console\ConsoleApp;
 
-class m20241120_create_migrations_table
+class m20241120102708_create_migrations_table
 {
     public function up(): void
     {

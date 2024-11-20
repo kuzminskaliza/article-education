@@ -242,8 +242,10 @@ PHP;
                 $query .= " WHERE " . implode(" AND ", $conditions);
             }
 
-            // Додаємо сортування
-            $query .= " ORDER BY created_at DESC";
+            if (!empty($options)) {
+                // Додаємо сортування
+                $query .= " ORDER BY created_at DESC";
+            }
 
             // Додаємо обмеження кількості
             if (isset($options['count']) && is_int($options['count'])) {
