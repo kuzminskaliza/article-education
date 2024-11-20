@@ -2,9 +2,11 @@
 
 namespace backend\model;
 
+use backend\BackendApp;
+use PDO;
+
 class Article
 {
-    public const string FILE_PATH = __DIR__ . '/../../data/article.json';
     public const int STATUS_NEW = 1;
     public const int STATUS_PUBLISHED = 2;
     public const int STATUS_UNPUBLISHED = 3;
@@ -28,14 +30,11 @@ class Article
 
     public function getAll(): array
     {
-        if (!file_exists(self::FILE_PATH)) {
-            return [];
-        }
-        $jsonData = file_get_contents(self::FILE_PATH);
-        $arrayData = json_decode($jsonData, true);
-        $collection = [];
+        $stmt = BackendApp::getDb()->query('SELECT * FROM articles');
+        $articles = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-        foreach ($arrayData as $data) {
+        $collection = [];
+        foreach ($articles as $data) {
             $article = new self();
             $article->id = (int)$data['id'];
             $article->status = (int)$data['status'];
@@ -47,8 +46,65 @@ class Article
         return $collection;
     }
 
+    public function create(array $data): bool
+    {
+        $this->status = (int)$data['status'];
+        $this->title = (string)$data['title'];
+        $this->description = (string)$data['description'];
+
+        if ($this->validate()) {
+            $stmt = BackendApp::getDb()->prepare('INSERT INTO articles (title, status, description) VALUES (:title, :status, :description)');
+            return $stmt->execute([
+                ':title' => $this->title,
+                ':status' => $this->status,
+                ':description' => $this->description,]);
+        }
+        return false;
+    }
+
+    public function update(array $data): bool
+    {
+        $this->status = (int)$data['status'];
+        $this->title = (string)$data['title'];
+        $this->description = (string)$data['description'];
+
+        if ($this->validate()) {
+            $stmt = BackendApp::getDb()->prepare('UPDATE articles SET title = :title, status = :status, description = :description WHERE id = :id');
+            return $stmt->execute([
+                ':id' => $this->id,
+                ':title' => $this->title,
+                ':status' => $this->status,
+                ':description' => $this->description
+            ]);
+        }
+        return false;
+    }
+
+    public function delete(): bool
+    {
+        $stmt = BackendApp::getDb()->prepare('DELETE FROM articles WHERE id = :id');
+        return $stmt->execute([':id' => $this->id]);
+    }
+
+    public function findId(int $id): ?Article
+    {
+        $stmt = BackendApp::getDb()->prepare('SELECT * FROM articles WHERE id = :id');
+        $stmt->execute([':id' => $id]);
+        $data = $stmt->fetch(PDO::FETCH_ASSOC);
+        if ($data) {
+            $article = new self();
+            $article->id = $data['id'];
+            $article->status = $data['status'];
+            $article->title = $data['title'];
+            $article->description = $data['description'];
+            return $article;
+        }
+        return null;
+    }
+
     public function validate(): bool
     {
+        $this->errors = [];
         if (strlen($this->title) < 3 || strlen($this->title) > 255) {
             $this->errors['title'] = 'Title is required';
         }
@@ -64,86 +120,6 @@ class Article
             $this->errors['description'] = 'Description is required';
         }
         return empty($this->errors);
-    }
-
-    public function create(array $data): bool
-    {
-        if (!file_exists(self::FILE_PATH)) {
-            file_put_contents(self::FILE_PATH, json_encode([]));
-        }
-
-        $jsonData = file_get_contents(self::FILE_PATH);
-        $dataArray = json_decode($jsonData, true);
-
-        $this->id = $this->generateNewId($dataArray);
-        $this->status = (int)$data['status'];
-        $this->title = (string)$data['title'];
-        $this->description = (string)$data['description'];
-        if ($this->validate()) {
-            $dataArray[] = [
-                'id' => $this->id,
-                'title' => $this->title,
-                'status' => $this->status,
-                'description' => $this->description,
-            ];
-
-            return boolval(file_put_contents(self::FILE_PATH, json_encode($dataArray, JSON_PRETTY_PRINT)));
-        }
-
-        return false;
-    }
-
-    public function update(array $data): bool
-    {
-        $this->status = (int)$data['status'];
-        $this->title = (string)$data['title'];
-        $this->description = (string)$data['description'];
-
-        if ($this->validate()) {
-            $jsonData = file_get_contents(self::FILE_PATH);
-            $dataArray = json_decode($jsonData, true);
-
-            foreach ($dataArray as &$data) {
-                if ($data['id'] === $this->id) {
-                    $data['status'] = $this->status;
-                    $data['title'] = $this->title;
-                    $data['description'] = $this->description;
-                    break;
-                }
-            }
-
-            return boolval(file_put_contents(self::FILE_PATH, json_encode($dataArray, JSON_PRETTY_PRINT)));
-        }
-
-        return false;
-    }
-
-    private function generateNewId(array $dataArray): int
-    {
-        if (empty($dataArray)) {
-            return 1;
-        }
-
-        $maxId = max(array_column($dataArray, 'id'));
-        return $maxId + 1;
-    }
-
-    public function findId(int $id): ?Article
-    {
-        $jsonData = file_get_contents(self::FILE_PATH);
-        $dataArray = json_decode($jsonData, true);
-
-        foreach ($dataArray as $data) {
-            if ($data['id'] == $id) {
-                $article = new self();
-                $article->id = $data['id'];
-                $article->status = $data['status'];
-                $article->title = $data['title'];
-                $article->description = $data['description'];
-                return $article;
-            }
-        }
-        return null;
     }
 
     public function getError(string $attribute): ?string
@@ -174,21 +150,5 @@ class Article
     public function getDescription(): ?string
     {
         return $this->description;
-    }
-
-    public function delete(): bool
-    {
-        $jsonData = file_get_contents(self::FILE_PATH);
-        $dataArray = json_decode($jsonData, true);
-
-        foreach ($dataArray as $index => $data) {
-            if ($data['id'] == $this->id) {
-                unset($dataArray[$index]);
-                $dataArray = array_values($dataArray);
-
-                return boolval(file_put_contents(self::FILE_PATH, json_encode($dataArray, JSON_PRETTY_PRINT)));
-            }
-        }
-        return false;
     }
 }
