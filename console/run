@@ -1,0 +1,27 @@
+#!/usr/bin/env php
+<?php
+
+require 'vendor/autoload.php';
+
+use console\ConsoleApp;
+
+$config = require 'console/config.php';
+$app = new ConsoleApp($config);
+
+// Отримуємо параметри з командного рядка
+$arguments = $argv;
+array_shift($arguments); // Видаляємо назву скрипта з аргументів
+
+// Перевірка, що команда вказана
+if (empty($arguments)) {
+    echo "Команда не вказана. Використовуйте ./console <команда> [параметри]\n";
+    exit(1);
+}
+
+// Виконання команди
+try {
+    $app->runCommand($arguments);
+} catch (Exception $e) {
+    echo 'Помилка: ' . $e->getMessage() . "\n";
+    exit(1);
+}
