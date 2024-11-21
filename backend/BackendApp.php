@@ -6,6 +6,8 @@ use backend\controller\AdminController;
 use backend\model\Admin;
 use backend\view\BaseView;
 use Exception;
+use PDO;
+use PDOException;
 
 class BackendApp
 {
@@ -15,15 +17,32 @@ class BackendApp
 
     private array $config;
     private BaseView $view;
+    public static PDO $pdo;
 
     /**
      * @param array $config
+     * @throws Exception
      */
     public function __construct(array $config)
     {
         session_start();
         $this->config = $config;
         $this->view = new BaseView();
+        $this->initDb();
+    }
+
+    /**
+     * @throws Exception
+     */
+    private function initDb(): void
+    {
+        try {
+            self::$pdo = new PDO($this->config['db']['dsn'], $this->config['db']['username'], $this->config['db']['password']);
+            self::$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        } catch (Exception $exception) {
+            throw new Exception('Не вдалось підключитись до бази даних' . $exception->getMessage());
+        }
+
     }
 
     /**

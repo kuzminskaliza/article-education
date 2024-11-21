@@ -2,10 +2,11 @@
 
 namespace backend\model;
 
+use backend\BackendApp;
+use PDO;
+
 class Admin
 {
-    public const string FILE_PATH = __DIR__ . '/../../data/admin.json';
-
     private ?string $name;
     private int $id;
     private ?string $email;
@@ -20,27 +21,20 @@ class Admin
 
     public function register(array $data): bool
     {
-        if (!file_exists(self::FILE_PATH)) {
-            file_put_contents(self::FILE_PATH, json_encode([]));
-        }
-
-        $jsonData = file_get_contents(self::FILE_PATH);
-        $admins = json_decode($jsonData, true);
-
-        $this->id = $this->generateNewId($admins);
         $this->name = (string)$data['name'];
         $this->email = (string)$data['email'];
         $this->password = (string)$data['password'];
         $this->confirm_password = (string)$data['confirm_password'];
 
         if ($this->validateRegistration()) {
-            $admins[] = [
-                'id' => $this->id,
-                'name' => $this->name,
-                'email' => $this->email,
-                'password' => md5($this->password)
-            ];
-            file_put_contents(self::FILE_PATH, json_encode($admins, JSON_PRETTY_PRINT));
+            $stmt = BackendApp::$pdo->prepare('INSERT INTO admin (name, email, password) VALUES (:name, :email, :password) RETURNING id');
+            $stmt->execute([
+                ':name' => $this->name,
+                ':email' => $this->email,
+                ':password' => md5($this->password)
+            ]);
+            $admin = $stmt->fetch(PDO::FETCH_ASSOC);
+            $this->id = (int)$admin['id'];
             $_SESSION['id'] = $this->id;
             return true;
         }
@@ -52,23 +46,15 @@ class Admin
         $this->email = (string)$data['email'];
         $this->password = (string)$data['password'];
 
-        if (!file_exists(self::FILE_PATH)) {
-            return false;
-        }
+        $stmt = BackendApp::$pdo->prepare('SELECT id FROM admin WHERE email = :email AND password = :password LIMIT 1');
+        $stmt->execute([':email' => $this->email, ':password' => md5($this->password)]);
 
-        $jsonData = file_get_contents(self::FILE_PATH);
-        $admins = json_decode($jsonData, true);
-
-        if ($this->validateLogin()) {
-            return false;
+        $admin = $stmt->fetch(PDO::FETCH_ASSOC);
+        if ($admin) {
+            $_SESSION['id'] = $admin['id'];
+            return true;
         }
-
-        foreach ($admins as $admin) {
-            if ($admin['email'] === $this->email && $admin['password'] === md5($this->password)) {
-                $_SESSION['id'] = $admin['id'];
-                return true;
-            }
-        }
+        $this->errors['login'] = 'Invalid email or password';
         return false;
     }
 
@@ -79,34 +65,25 @@ class Admin
         }
         $id = $_SESSION['id'];
 
-        $jsonData = file_get_contents(self::FILE_PATH);
-        $dataArray = json_decode($jsonData, true);
+        $stmt = BackendApp::$pdo->prepare('SELECT * FROM admin WHERE id = :id');
+        $stmt->execute([':id' => $id]);
+        $adminData = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        foreach ($dataArray as $data) {
-            if ($data['id'] == $id) {
-                $admin = new self();
-                $admin->id = $data['id'];
-                $admin->name = $data['name'] ?? '';
-                $admin->email = $data['email'] ?? '';
-                $admin->password = $data['password'] ?? '';
-                return $admin;
-            }
+        if ($adminData) {
+            $admin = new self();
+            $admin->id = $adminData['id'];
+            $admin->name = $adminData['name'];
+            $admin->email = $adminData['email'];
+            return $admin;
         }
-
         return null;
     }
 
     private function emailValidation(string $email): bool
     {
-        $jsonData = file_get_contents(self::FILE_PATH);
-        $admins = json_decode($jsonData, true);
-
-        foreach ($admins as $admin) {
-            if ($admin['email'] === $email) {
-                return false;
-            }
-        }
-        return true;
+        $stmt = BackendApp::$pdo->prepare('SELECT EXISTS(SELECT 1 FROM admin WHERE email = :email) ');
+        $stmt->execute([':email' => $email]);
+        return (bool)$stmt->fetchColumn();
     }
 
     private function emailAndPassword(): void
@@ -141,13 +118,6 @@ class Admin
         if ($this->password !== $this->confirm_password) {
             $this->errors['confirm_password'] = 'Password do not match';
         }
-
-        return empty($this->errors);
-    }
-
-    public function validateLogin(): bool
-    {
-        $this->emailAndPassword();
         return empty($this->errors);
     }
 
@@ -155,16 +125,6 @@ class Admin
     {
         session_unset();
         session_destroy();
-    }
-
-    private function generateNewId(array $admins): int
-    {
-        if (empty($admins)) {
-            return 1;
-        }
-
-        $maxId = max(array_column($admins, 'id'));
-        return $maxId + 1;
     }
 
     public function getError(string $attribute): ?string
