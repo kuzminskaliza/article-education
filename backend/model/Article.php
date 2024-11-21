@@ -53,11 +53,12 @@ class Article
         $this->description = (string)$data['description'];
 
         if ($this->validate()) {
-            $stmt = BackendApp::$pdo->prepare('INSERT INTO article (title, status, description) VALUES (:title, :status, :description)');
+            $stmt = BackendApp::$pdo->prepare('INSERT INTO article (title, status, description) VALUES (:title, :status, :description) RETURNING id');
             return $stmt->execute([
                 ':title' => $this->title,
                 ':status' => $this->status,
-                ':description' => $this->description,]);
+                ':description' => $this->description
+            ]);
         }
         return false;
     }
