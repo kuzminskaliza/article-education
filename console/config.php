@@ -11,7 +11,7 @@ return [
     ],
     'db' => [
         'dsn' => 'pgsql:host=127.0.0.1;port=5432;dbname=education',
-        'username' => 'brsk',
-        'password' => '1204',
+        'username' => 'liza',
+        'password' => '1805',
     ]
 ];
