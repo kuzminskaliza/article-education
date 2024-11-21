@@ -17,7 +17,7 @@ class BackendApp
 
     private array $config;
     private BaseView $view;
-    private static ?PDO $pdo = null;
+    public static PDO $pdo;
 
     /**
      * @param array $config
@@ -36,30 +36,13 @@ class BackendApp
      */
     private function initDb(): void
     {
-        if (!isset(self::$pdo)) {
-            try {
-                $dsn = sprintf('pgsql:host=%s;port=%d;dbname=%s',
-                    $this->config['db']['host'],
-                    $this->config['db']['port'],
-                    $this->config['db']['name']
-                );
-                self::$pdo = new PDO($dsn, $this->config['db']['user'], $this->config['db']['password']);
-                self::$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            } catch (Exception $exception) {
-                throw new Exception('Не вдалось підключитись до бази даних' . $exception->getMessage());
-            }
+        try {
+            self::$pdo = new PDO($this->config['db']['dsn'], $this->config['db']['username'], $this->config['db']['password']);
+            self::$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        } catch (Exception $exception) {
+            throw new Exception('Не вдалось підключитись до бази даних' . $exception->getMessage());
         }
-    }
 
-    /**
-     * @throws Exception
-     */
-    public static function getDb(): PDO
-    {
-        if (!self::$pdo) {
-            throw new Exception('База даних не ініціалізована');
-        }
-        return self::$pdo;
     }
 
     /**

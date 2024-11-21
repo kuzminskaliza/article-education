@@ -27,14 +27,14 @@ class Admin
         $this->confirm_password = (string)$data['confirm_password'];
 
         if ($this->validateRegistration()) {
-            $stmt = BackendApp::getDb()->prepare('INSERT INTO admins (name, email, password) VALUES (:name, :email, :password)');
-            $passwordProtection = md5($this->password);
+            $stmt = BackendApp::$pdo->prepare('INSERT INTO admin (name, email, password) VALUES (:name, :email, :password) RETURNING id');
             $stmt->execute([
                 ':name' => $this->name,
                 ':email' => $this->email,
-                ':password' => $passwordProtection
+                ':password' => md5($this->password)
             ]);
-            $this->id = BackendApp::getDb()->lastInsertId();
+            $admin = $stmt->fetch(PDO::FETCH_ASSOC);
+            $this->id = (int)$admin['id'];
             $_SESSION['id'] = $this->id;
             return true;
         }
@@ -46,10 +46,11 @@ class Admin
         $this->email = (string)$data['email'];
         $this->password = (string)$data['password'];
 
-        $stmt = BackendApp::getDb()->prepare('SELECT * FROM admins WHERE email = :email');
-        $stmt->execute([':email' => $this->email]);
+        $stmt = BackendApp::$pdo->prepare('SELECT id FROM admin WHERE email = :email AND password = :password LIMIT 1');
+        $stmt->execute([':email' => $this->email, ':password' => md5($this->password)]);
+
         $admin = $stmt->fetch(PDO::FETCH_ASSOC);
-        if ($admin && md5($this->password, $admin['password'])) {
+        if ($admin) {
             $_SESSION['id'] = $admin['id'];
             return true;
         }
@@ -64,7 +65,7 @@ class Admin
         }
         $id = $_SESSION['id'];
 
-        $stmt = BackendApp::getDb()->prepare('SELECT * FROM admins WHERE id = :id');
+        $stmt = BackendApp::$pdo->prepare('SELECT * FROM admin WHERE id = :id');
         $stmt->execute([':id' => $id]);
         $adminData = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -80,10 +81,9 @@ class Admin
 
     private function emailValidation(string $email): bool
     {
-        $stmt = BackendApp::getDb()->prepare('SELECT COUNT(*) FROM admins WHERE email = :email');
+        $stmt = BackendApp::$pdo->prepare('SELECT EXISTS(SELECT 1 FROM admin WHERE email = :email) ');
         $stmt->execute([':email' => $email]);
-        $count = $stmt->fetchColumn();
-        return $count == 0;
+        return (bool)$stmt->fetchColumn();
     }
 
     private function emailAndPassword(): void

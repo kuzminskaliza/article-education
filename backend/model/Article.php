@@ -30,11 +30,11 @@ class Article
 
     public function getAll(): array
     {
-        $stmt = BackendApp::getDb()->query('SELECT * FROM articles');
-        $articles = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $stmt = BackendApp::$pdo->query('SELECT * FROM article');
+        $article = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         $collection = [];
-        foreach ($articles as $data) {
+        foreach ($article as $data) {
             $article = new self();
             $article->id = (int)$data['id'];
             $article->status = (int)$data['status'];
@@ -53,7 +53,7 @@ class Article
         $this->description = (string)$data['description'];
 
         if ($this->validate()) {
-            $stmt = BackendApp::getDb()->prepare('INSERT INTO articles (title, status, description) VALUES (:title, :status, :description)');
+            $stmt = BackendApp::$pdo->prepare('INSERT INTO article (title, status, description) VALUES (:title, :status, :description)');
             return $stmt->execute([
                 ':title' => $this->title,
                 ':status' => $this->status,
@@ -69,7 +69,7 @@ class Article
         $this->description = (string)$data['description'];
 
         if ($this->validate()) {
-            $stmt = BackendApp::getDb()->prepare('UPDATE articles SET title = :title, status = :status, description = :description WHERE id = :id');
+            $stmt = BackendApp::$pdo->prepare('UPDATE article SET title = :title, status = :status, description = :description WHERE id = :id');
             return $stmt->execute([
                 ':id' => $this->id,
                 ':title' => $this->title,
@@ -82,13 +82,13 @@ class Article
 
     public function delete(): bool
     {
-        $stmt = BackendApp::getDb()->prepare('DELETE FROM articles WHERE id = :id');
+        $stmt = BackendApp::$pdo->prepare('DELETE FROM article WHERE id = :id');
         return $stmt->execute([':id' => $this->id]);
     }
 
     public function findId(int $id): ?Article
     {
-        $stmt = BackendApp::getDb()->prepare('SELECT * FROM articles WHERE id = :id');
+        $stmt = BackendApp::$pdo->prepare('SELECT * FROM article WHERE id = :id');
         $stmt->execute([':id' => $id]);
         $data = $stmt->fetch(PDO::FETCH_ASSOC);
         if ($data) {
