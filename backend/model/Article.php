@@ -2,10 +2,7 @@
 
 namespace backend\model;
 
-use backend\BackendApp;
-use PDO;
-
-class Article
+class Article extends BaseModel
 {
     public const int STATUS_NEW = 1;
     public const int STATUS_PUBLISHED = 2;
@@ -17,93 +14,29 @@ class Article
         self::STATUS_UNPUBLISHED => 'Unpublished',
     ];
 
-    private int $id;
-    private ?string $title;
-    private ?int $status;
-    private ?string $description;
-    private array $errors = [];
+    protected int $id;
+    protected ?string $title = null;
+    protected ?int $status = null;
+    protected ?string $description = null;
 
-    public function __construct()
+    public function getTableName(): string
     {
-        $this->title = $this->status = $this->description = null;
+        return 'article';
     }
 
-    public function getAll(): array
+    public function getAttributes(): array
     {
-        $stmt = BackendApp::$pdo->query('SELECT * FROM article');
-        $article = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-        $collection = [];
-        foreach ($article as $data) {
-            $article = new self();
-            $article->id = (int)$data['id'];
-            $article->status = (int)$data['status'];
-            $article->title = (string)$data['title'];
-            $article->description = (string)$data['description'];
-
-            $collection[] = $article;
-        }
-        return $collection;
+        return [
+            'id',
+            'title',
+            'status',
+            'description',
+            'updated_at',
+            'created_at',
+        ];
     }
 
-    public function create(array $data): bool
-    {
-        $this->status = (int)$data['status'];
-        $this->title = (string)$data['title'];
-        $this->description = (string)$data['description'];
-
-        if ($this->validate()) {
-            $stmt = BackendApp::$pdo->prepare('INSERT INTO article (title, status, description) VALUES (:title, :status, :description) RETURNING id');
-            return $stmt->execute([
-                ':title' => $this->title,
-                ':status' => $this->status,
-                ':description' => $this->description
-            ]);
-        }
-        return false;
-    }
-
-    public function update(array $data): bool
-    {
-        $this->status = (int)$data['status'];
-        $this->title = (string)$data['title'];
-        $this->description = (string)$data['description'];
-
-        if ($this->validate()) {
-            $stmt = BackendApp::$pdo->prepare('UPDATE article SET title = :title, status = :status, description = :description WHERE id = :id');
-            return $stmt->execute([
-                ':id' => $this->id,
-                ':title' => $this->title,
-                ':status' => $this->status,
-                ':description' => $this->description
-            ]);
-        }
-        return false;
-    }
-
-    public function delete(): bool
-    {
-        $stmt = BackendApp::$pdo->prepare('DELETE FROM article WHERE id = :id');
-        return $stmt->execute([':id' => $this->id]);
-    }
-
-    public function findId(int $id): ?Article
-    {
-        $stmt = BackendApp::$pdo->prepare('SELECT * FROM article WHERE id = :id');
-        $stmt->execute([':id' => $id]);
-        $data = $stmt->fetch(PDO::FETCH_ASSOC);
-        if ($data) {
-            $article = new self();
-            $article->id = $data['id'];
-            $article->status = $data['status'];
-            $article->title = $data['title'];
-            $article->description = $data['description'];
-            return $article;
-        }
-        return null;
-    }
-
-    public function validate(): bool
+    public function validate(array $attributes = []): bool
     {
         $this->errors = [];
         if (strlen($this->title) < 3 || strlen($this->title) > 255) {
@@ -121,16 +54,6 @@ class Article
             $this->errors['description'] = 'Description is required';
         }
         return empty($this->errors);
-    }
-
-    public function getError(string $attribute): ?string
-    {
-        return $this->errors[$attribute] ?? null;
-    }
-
-    public function hasError(string $attribute): bool
-    {
-        return array_key_exists($attribute, $this->errors);
     }
 
     public function getId(): int

@@ -4,9 +4,15 @@ namespace backend\model;
 
 interface QueryBuilderInterface
 {
-    public function insert(array $data): bool;
+    public function findOneById(int $id): ?object;
 
-    public function update(array $data): bool;
+    public function findOne(array $conditions): ?object;
 
-    public function delete(): bool;
+    /**
+     * @param array $conditions
+     * @return object[]
+     */
+    public function findAll(array $conditions = []): array;
+
+    public function exist(array $conditions): bool;
 }

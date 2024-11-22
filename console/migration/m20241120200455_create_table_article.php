@@ -16,9 +16,7 @@ class m20241120200455_create_table_article
                 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
         ";
-
         ConsoleApp::$pdo->exec($query);
-
     }
 
     public function down(): void
@@ -26,6 +24,5 @@ class m20241120200455_create_table_article
         $query = "DROP TABLE IF EXISTS article";
 
         ConsoleApp::$pdo->exec($query);
-
     }
 }
