@@ -1,0 +1,9 @@
+<?php
+
+return [
+    'db' => [
+        'dsn' => 'pgsql:host=127.0.0.1;port=5432;dbname=name',
+        'username' => 'username',
+        'password' => password
+    ],
+];
