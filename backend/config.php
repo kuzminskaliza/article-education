@@ -7,9 +7,9 @@ return [
         'vendor_url' => '/vendor/almasaeed2010/adminlte/',
     ],
     'db' => [
-        'dsn' => 'pgsql:host=127.0.0.1;port=5432;dbname=education',
-        'username' => 'liza',
-        'password' => 1805
+        'dsn' => 'dsn',
+        'username' => 'username',
+        'password' => 'password'
     ],
     'route' => [
 

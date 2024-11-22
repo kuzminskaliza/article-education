@@ -9,6 +9,15 @@ use console\ConsoleApp;
 require 'vendor/autoload.php';
 
 $config = require 'console/config.php';
+
+if (!file_exists('console/config-local.php')) {
+    echo 'No config local file.';
+    exit(1);
+}
+
+$configLocal = require 'config-local.php'; // сетимо локальні параметри
+$config = array_merge($config, $configLocal);
+
 $app = new ConsoleApp($config);
 
 // Отримуємо параметри з командного рядка
