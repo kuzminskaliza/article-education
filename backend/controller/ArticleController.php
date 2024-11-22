@@ -17,14 +17,14 @@ class ArticleController extends BaseController
     public function actionIndex(): string
     {
         return $this->render('index', [
-            'articles' => $this->article->getAll()
+            'articles' => $this->article->findAll()
         ]);
     }
 
     public function actionCreate(): string
     {
         if ($_SERVER["REQUEST_METHOD"] == 'POST') {
-            if ($this->article->create($_POST)) {
+            if ($this->article->insert($_POST)) {
                 $this->redirect('/article/index');
             }
         }
@@ -91,7 +91,7 @@ class ArticleController extends BaseController
         if (!$id) {
             throw new Exception('Not found Article');
         }
-        $article = $this->article->findId($id);
+        $article = $this->article->findOneById($id);
         if (!$article) {
             throw new Exception('Not found Article');
         }
