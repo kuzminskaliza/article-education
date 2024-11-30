@@ -1,8 +1,11 @@
 <?php
 
+use backend\model\ArticleStatus;
 use backend\model\Article;
+use backend\model\Category;
 
 /* @var Article $article */
+/* @var Category[] $categories */
 ?>
 
 <section class="content-header">
@@ -38,6 +41,23 @@ use backend\model\Article;
                     </div>
                 <?php endif; ?>
 
+            <div class="form-group">
+                <label for="inputCategory">Category</label>
+                <select id="inputCategory"
+                        class="form-control custom-select <?= $article->hasError('category_id') ? 'is-invalid' : 'is-valid' ?>"
+                        name="category_id">
+                    <option selected="" disabled="">Select one</option>
+                    <?php foreach ((new Category())->getAllCategory() as $id => $name) : ?>
+                        <option value="<?= $id ?>" <?= $article->getCategory() == $id ? 'selected' : '' ?>>
+                            <?= htmlspecialchars($name) ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+                <?php if ($article->hasError('category_id')) : ?>
+                    <div class="invalid-feedback">
+                        <?= $article->getError('category_id') ?>
+                    </div>
+                <?php endif; ?>
             </div>
             <div class="form-group">
                 <label for="inputStatus">Status</label>
@@ -45,9 +65,9 @@ use backend\model\Article;
                         class="form-control custom-select <?= $article->hasError('status') ? 'is-invalid' : 'is-valid' ?>"
                         name="status">
                     <option selected="" disabled="">Select one</option>
-                    <?php foreach (Article::STATUSES as $status => $label) : ?>
-                        <option value="<?= $status ?>" <?= $article->getStatus() == $status ? 'selected' : '' ?>>
-                            <?= $label ?>
+                    <?php foreach ((new ArticleStatus())->getAllStatuses() as $id => $title) : ?>
+                        <option value="<?= $id ?>" <?= $article->getStatus() == $id ? 'selected' : '' ?>>
+                            <?= htmlspecialchars($title) ?>
                         </option>
                     <?php endforeach; ?>
                 </select>

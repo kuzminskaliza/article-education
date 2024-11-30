@@ -4,19 +4,11 @@ namespace backend\model;
 
 class Article extends BaseModel
 {
-    public const int STATUS_NEW = 1;
-    public const int STATUS_PUBLISHED = 2;
-    public const int STATUS_UNPUBLISHED = 3;
-
-    public const array STATUSES = [
-        self::STATUS_NEW => 'New',
-        self::STATUS_PUBLISHED => 'Published',
-        self::STATUS_UNPUBLISHED => 'Unpublished',
-    ];
 
     protected int $id;
     protected ?string $title = null;
     protected ?int $status = null;
+    protected ?int $category_id = null;
     protected ?string $description = null;
 
     public function getTableName(): string
@@ -30,6 +22,7 @@ class Article extends BaseModel
             'id',
             'title',
             'status',
+            'category_id',
             'description',
             'updated_at',
             'created_at',
@@ -46,10 +39,21 @@ class Article extends BaseModel
         if (empty($this->status)) {
             $this->errors['status'] = 'Select a status';
         } else {
-            if (!array_key_exists($this->status, self::STATUSES)) {
+            $statuses = (new ArticleStatus())->getAllStatuses();
+            if (!array_key_exists($this->status, $statuses)) {
                 $this->errors['status'] = 'Incorrect status';
             }
         }
+
+        if (empty($this->category_id)) {
+            $this->errors['category_id'] = 'Select a category';
+        } else {
+            $categories = (new Category())->getAllCategory();
+            if (!array_key_exists($this->category_id, $categories)) {
+                $this->errors['category_id'] = 'Incorrect category';
+            }
+        }
+
         if (empty($this->description)) {
             $this->errors['description'] = 'Description is required';
         }
@@ -69,6 +73,10 @@ class Article extends BaseModel
     public function getStatus(): ?int
     {
         return $this->status;
+    }
+    public function getCategory(): ?int
+    {
+        return $this->category_id;
     }
 
     public function getDescription(): ?string

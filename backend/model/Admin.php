@@ -97,7 +97,7 @@ class Admin extends BaseModel
         if ($this->validate(['email', 'password'])) {
             $admin = $this->findOne([
                 'email' => $this->email,
-                'password' => md5($this->password),
+                'password' => $this->password,
             ]);
 
             if ($admin) {
