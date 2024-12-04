@@ -11,6 +11,15 @@ class Article extends BaseModel
     protected ?int $category_id = null;
     protected ?string $description = null;
 
+    private ArticleStatus $articleStatus;
+    private Category $category;
+
+    public function __construct()
+    {
+        parent::__construct();
+        $this->articleStatus = new ArticleStatus();
+        $this->category = new Category();
+    }
     public function getTableName(): string
     {
         return 'article';
@@ -39,7 +48,7 @@ class Article extends BaseModel
         if (empty($this->status)) {
             $this->errors['status'] = 'Select a status';
         } else {
-            $statuses = (new ArticleStatus())->getAllStatuses();
+            $statuses = $this->articleStatus->getAllStatuses();
             if (!array_key_exists($this->status, $statuses)) {
                 $this->errors['status'] = 'Incorrect status';
             }
@@ -48,7 +57,7 @@ class Article extends BaseModel
         if (empty($this->category_id)) {
             $this->errors['category_id'] = 'Select a category';
         } else {
-            $categories = (new Category())->getAllCategory();
+            $categories = $this->category->getAllCategory();
             if (!array_key_exists($this->category_id, $categories)) {
                 $this->errors['category_id'] = 'Incorrect category';
             }
@@ -70,11 +79,11 @@ class Article extends BaseModel
         return $this->title;
     }
 
-    public function getStatus(): ?int
+    public function getStatusId(): ?int
     {
         return $this->status;
     }
-    public function getCategory(): ?int
+    public function getCategoryId(): ?int
     {
         return $this->category_id;
     }
@@ -82,5 +91,14 @@ class Article extends BaseModel
     public function getDescription(): ?string
     {
         return $this->description;
+    }
+    public function getAllStatuses(): array
+    {
+        return $this->articleStatus->getAllStatuses();
+    }
+
+    public function getAllCategories(): array
+    {
+        return $this->category->getAllCategory();
     }
 }

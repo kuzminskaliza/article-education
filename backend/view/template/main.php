@@ -83,10 +83,14 @@ use backend\model\Admin;
                             <i class="far fa-circle nav-icon"></i>
                             <p>Article</p>
                         </a>
+                    </li>
+                    <li class="nav-item">
                         <a href="/status/index" class="nav-link">
                             <i class="far fa-circle nav-icon"></i>
                             <p>Article Status</p>
                         </a>
+                    </li>
+                    <li class="nav-item">
                         <a href="/category/index" class="nav-link">
                             <i class="far fa-circle nav-icon"></i>
                             <p>Article Category</p>

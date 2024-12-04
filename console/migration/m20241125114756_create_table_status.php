@@ -14,8 +14,13 @@ class m20241125114756_create_table_status
                 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
         ";
-
         ConsoleApp::$pdo->exec($query);
+
+        $queryInsert = "
+            INSERT INTO article_status (title)
+            VALUES ('New'), ('Published'), ('Unpublished')
+        ";
+        ConsoleApp::$pdo->exec($queryInsert);
     }
 
     public function down(): void

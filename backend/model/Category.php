@@ -11,7 +11,7 @@ class Category extends BaseModel
 
     public function getTableName(): string
     {
-        return 'categories';
+        return 'category';
     }
 
     public function getAttributes(): array
@@ -27,8 +27,10 @@ class Category extends BaseModel
     public function validate(array $attributes = []): bool
     {
         $this->errors = [];
-        if (strlen($this->name) < 3 || strlen($this->name) > 255) {
+        if (empty($this->name)) {
             $this->errors['name'] = 'Title is required';
+        } elseif (strlen($this->name) < 3 || strlen($this->name) > 255) {
+            $this->errors['name'] = 'Title must be between 3-255 symbols';
         }
         return empty($this->errors);
     }

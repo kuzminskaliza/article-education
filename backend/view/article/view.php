@@ -1,12 +1,11 @@
 <?php
 
 use backend\model\Article;
-use backend\model\ArticleStatus;
-use backend\model\Category;
 
 /* @var Article $article */
 
-$statuses = (new ArticleStatus())->getAllStatuses();
+$statuses = $article->getAllStatuses();
+$categories = $article->getAllCategories();
 ?>
 
 <section class="content-header">
@@ -38,11 +37,11 @@ $statuses = (new ArticleStatus())->getAllStatuses();
             </tr>
             <tr style="border: none;">
                 <td style="border: none;"><strong>Status:</strong></td>
-                <td style="border: none;"><?= $statuses[$article->getStatus()] ?? 'Unknown' ?></td>
+                <td style="border: none;"><?= ($statuses[$article->getStatusId()] ?? 'Unknown') ?></td>
             </tr>
             <tr style="border: none;">
                 <td style="border: none;"><strong>Category:</strong></td>
-                <td style="border: none;"><?= (new Category())->getAllCategory()[$article->getCategory()] ?? 'Unknown' ?></td>
+                <td style="border: none;"><?= ($categories[$article->getCategoryId()] ?? 'Unknown') ?></td>
             </tr>
             <tr style="border: none;">
                 <td style="border: none;"><strong>Description:</strong></td>

@@ -1,13 +1,12 @@
 <?php
 
 use backend\model\Article;
-use backend\model\ArticleStatus;
-use backend\model\Category;
 
 /** @var Article[] $articles */
+$article = $articles[0];
 
-$statuses = (new ArticleStatus())->getAllStatuses();
-$categories = (new Category())->getAllCategory();
+$statuses = $article->getAllStatuses();
+$categories = $article->getAllCategories();
 ?>
 
 <section class="content-header">
@@ -47,8 +46,8 @@ $categories = (new Category())->getAllCategory();
                     <td><?= $article->getId() ?></td>
                     <td><?= $article->getTitle() ?></td>
                     <td class="text-truncate modal-sm"><?= $article->getDescription() ?></td>
-                    <td><?= $statuses[$article->getStatus()] ?? 'Unknown' ?></td>
-                    <td><?= $categories[$article->getCategory()] ?? 'Unknown' ?></td>
+                    <td><?= $statuses[$article->getStatusId()] ?? 'Unknown' ?></td>
+                    <td><?= $categories[$article->getCategoryId()] ?? 'Unknown' ?></td>
                     <td class="project_progress"></td>
                     <td class="project-state"></td>
 

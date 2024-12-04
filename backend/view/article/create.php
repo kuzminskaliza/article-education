@@ -1,11 +1,8 @@
 <?php
 
-use backend\model\ArticleStatus;
 use backend\model\Article;
-use backend\model\Category;
 
 /* @var Article $article */
-/* @var Category[] $categories */
 ?>
 
 <section class="content-header">
@@ -47,8 +44,8 @@ use backend\model\Category;
                         class="form-control custom-select <?= $article->hasError('category_id') ? 'is-invalid' : 'is-valid' ?>"
                         name="category_id">
                     <option selected="" disabled="">Select one</option>
-                    <?php foreach ((new Category())->getAllCategory() as $id => $name) : ?>
-                        <option value="<?= $id ?>" <?= $article->getCategory() == $id ? 'selected' : '' ?>>
+                    <?php foreach ($article->getAllCategories() as $id => $name): ?>
+                        <option value="<?= $id ?>" <?= $article->getCategoryId() == $id ? 'selected' : '' ?>>
                             <?= htmlspecialchars($name) ?>
                         </option>
                     <?php endforeach; ?>
@@ -65,8 +62,8 @@ use backend\model\Category;
                         class="form-control custom-select <?= $article->hasError('status') ? 'is-invalid' : 'is-valid' ?>"
                         name="status">
                     <option selected="" disabled="">Select one</option>
-                    <?php foreach ((new ArticleStatus())->getAllStatuses() as $id => $title) : ?>
-                        <option value="<?= $id ?>" <?= $article->getStatus() == $id ? 'selected' : '' ?>>
+                    <?php foreach ($article->getAllStatuses() as $id => $title): ?>
+                        <option value="<?= $id ?>" <?= $article->getStatusId() == $id ? 'selected' : '' ?>>
                             <?= htmlspecialchars($title) ?>
                         </option>
                     <?php endforeach; ?>
