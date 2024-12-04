@@ -1,8 +1,12 @@
 <?php
 
 use backend\model\Article;
+use backend\model\ArticleStatus;
+use backend\model\Category;
 
 /* @var Article $article */
+
+$statuses = (new ArticleStatus())->getAllStatuses();
 ?>
 
 <section class="content-header">
@@ -14,7 +18,6 @@ use backend\model\Article;
         </div>
     </div>
 </section>
-
 
 <div class="card">
     <div class="card-header">
@@ -35,7 +38,11 @@ use backend\model\Article;
             </tr>
             <tr style="border: none;">
                 <td style="border: none;"><strong>Status:</strong></td>
-                <td style="border: none;"><?= $article::STATUSES[$article->getStatus()] ?></td>
+                <td style="border: none;"><?= $statuses[$article->getStatus()] ?? 'Unknown' ?></td>
+            </tr>
+            <tr style="border: none;">
+                <td style="border: none;"><strong>Category:</strong></td>
+                <td style="border: none;"><?= (new Category())->getAllCategory()[$article->getCategory()] ?? 'Unknown' ?></td>
             </tr>
             <tr style="border: none;">
                 <td style="border: none;"><strong>Description:</strong></td>
