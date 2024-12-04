@@ -16,31 +16,31 @@ use backend\model\Admin;
             <div class="input-group mb-3">
                 <input type="email"
                        name="email"
-                       class="form-control <?= $admin->hasError('email') ? 'in-valid' : 'is-invalid' ?>"
+                       class="form-control <?= $admin->hasError('email') ? 'is-invalid' : 'is-valid' ?>"
                        placeholder="Email"
                        value="<?= $admin->getEmail() ?? '' ?>">
-                <?php if ($admin->hasError('email')) : ?>
-                    <div class="invalid-feedback"><?= $admin->getError('email') ?></div>
-                <?php endif; ?>
                 <div class="input-group-append">
                     <div class="input-group-text">
                         <span class="fas fa-envelope"></span>
                     </div>
                 </div>
+                <?php if ($admin->hasError('email')) : ?>
+                    <div class="invalid-feedback"><?= $admin->getError('email') ?></div>
+                <?php endif; ?>
             </div>
             <div class="input-group mb-3">
                 <input type="password"
                        name="password"
-                       class="form-control <?= $admin->hasError('password') ? 'in-valid' : 'is-invalid' ?>"
+                       class="form-control <?= $admin->hasError('password') ? 'is-invalid' : 'is-valid' ?>"
                        placeholder="Password">
-                <?php if ($admin->hasError('password')) : ?>
-                    <div class="invalid-feedback"><?= $admin->getError('password') ?></div>
-                <?php endif; ?>
                 <div class="input-group-append">
                     <div class="input-group-text">
                         <span class="fas fa-lock"></span>
                     </div>
                 </div>
+                <?php if ($admin->hasError('password')) : ?>
+                    <div class="invalid-feedback"><?= $admin->getError('password') ?></div>
+                <?php endif; ?>
             </div>
             <div class="row">
                 <div class="col-4">
