@@ -45,17 +45,17 @@ use backend\model\Article;
                 <label for="inputStatus">Status</label>
                 <select id="inputStatus"
                         class="form-control custom-select <?= $article->hasError('status') ? 'is-invalid' : '' ?>"
-                        name="status">
+                        name="status_id">
                     <option selected="" disabled="">Select one</option>
-                    <?php foreach ($article->getAllStatuses() as $id => $title): ?>
-                        <option value="<?= $id ?>" <?= $article->getStatusId() == $id ? 'selected' : '' ?>>
-                            <?= htmlspecialchars($title) ?>
+                    <?php foreach ($article->getArticleStatus()->findAll() as $articleStatus) : ?>
+                        <option value="<?= $articleStatus->getId() ?>" <?= $article->getStatusId() == $articleStatus->getId() ? 'selected' : '' ?>>
+                            <?= htmlspecialchars($articleStatus->getTitle()) ?>
                         </option>
                     <?php endforeach; ?>
                 </select>
-                <?php if ($article->hasError('status')) : ?>
+                <?php if ($article->hasError('status_id')) : ?>
                     <div class="invalid-feedback">
-                        <?= $article->getError('status') ?>
+                        <?= $article->getError('status_id') ?>
                     </div>
                 <?php endif; ?>
             </div>
@@ -65,9 +65,9 @@ use backend\model\Article;
                         class="form-control custom-select <?= $article->hasError('category_id') ? 'is-invalid' : '' ?>"
                         name="category_id">
                     <option selected="" disabled="">Select one</option>
-                    <?php foreach ($article->getAllCategories() as $id => $name): ?>
-                        <option value="<?= $id ?>" <?= $article->getCategoryId() == $id ? 'selected' : '' ?>>
-                            <?= htmlspecialchars($name) ?>
+                    <?php foreach ($article->getCategory()->findAll() as $category) : ?>
+                        <option value="<?= $category->getId() ?>" <?= $article->getCategoryId() == $category->getId() ? 'selected' : '' ?>>
+                            <?= htmlspecialchars($category->getName()) ?>
                         </option>
                     <?php endforeach; ?>
                 </select>

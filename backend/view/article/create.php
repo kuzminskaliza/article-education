@@ -38,58 +38,58 @@ use backend\model\Article;
                     </div>
                 <?php endif; ?>
 
-            <div class="form-group">
-                <label for="inputCategory">Category</label>
-                <select id="inputCategory"
-                        class="form-control custom-select <?= $article->hasError('category_id') ? 'is-invalid' : 'is-valid' ?>"
-                        name="category_id">
-                    <option selected="" disabled="">Select one</option>
-                    <?php foreach ($article->getAllCategories() as $id => $name): ?>
-                        <option value="<?= $id ?>" <?= $article->getCategoryId() == $id ? 'selected' : '' ?>>
-                            <?= htmlspecialchars($name) ?>
-                        </option>
-                    <?php endforeach; ?>
-                </select>
-                <?php if ($article->hasError('category_id')) : ?>
-                    <div class="invalid-feedback">
-                        <?= $article->getError('category_id') ?>
-                    </div>
-                <?php endif; ?>
-            </div>
-            <div class="form-group">
-                <label for="inputStatus">Status</label>
-                <select id="inputStatus"
-                        class="form-control custom-select <?= $article->hasError('status') ? 'is-invalid' : 'is-valid' ?>"
-                        name="status">
-                    <option selected="" disabled="">Select one</option>
-                    <?php foreach ($article->getAllStatuses() as $id => $title): ?>
-                        <option value="<?= $id ?>" <?= $article->getStatusId() == $id ? 'selected' : '' ?>>
-                            <?= htmlspecialchars($title) ?>
-                        </option>
-                    <?php endforeach; ?>
-                </select>
-                <?php if ($article->hasError('status')) : ?>
-                    <div class="invalid-feedback">
-                        <?= $article->getError('status') ?>
-                    </div>
-                <?php endif; ?>
-            </div>
-            <div class="form-group">
-                <label for="inputDescription">Description</label>
-                <textarea id="inputDescription"
-                          class="form-control <?= $article->hasError('description') ? 'is-invalid' : 'is-valid' ?>"
-                          rows="4"
-                          name="description"><?= htmlspecialchars($article->getDescription() ?? '') ?></textarea>
-                <?php if ($article->hasError('description')) : ?>
-                    <div class="invalid-feedback">
-                        <?= $article->getError('description') ?>
-                    </div>
-                <?php endif; ?>
-            </div>
+                <div class="form-group">
+                    <label for="inputCategory">Category</label>
+                    <select id="inputCategory"
+                            class="form-control custom-select <?= $article->hasError('category_id') ? 'is-invalid' : 'is-valid' ?>"
+                            name="category_id">
+                        <option selected="" disabled="">Select one</option>
+                        <?php foreach ($article->getCategory()->findAll() as $category) : ?>
+                            <option value="<?= $category->getId() ?>" <?= $article->getCategoryId() === $category->getId() ? 'selected' : '' ?>>
+                                <?= htmlspecialchars($category->getName()) ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                    <?php if ($article->hasError('category_id')) : ?>
+                        <div class="invalid-feedback">
+                            <?= $article->getError('category_id') ?>
+                        </div>
+                    <?php endif; ?>
+                </div>
+                <div class="form-group">
+                    <label for="inputStatus">Status</label>
+                    <select id="inputStatus"
+                            class="form-control custom-select <?= $article->hasError('status_id') ? 'is-invalid' : 'is-valid' ?>"
+                            name="status_id">
+                        <option selected="" disabled="">Select one</option>
+                        <?php foreach ($article->getArticleStatus()->findAll() as $articleStatus) : ?>
+                            <option value="<?= $articleStatus->getId() ?>" <?= $article->getStatusId() === $articleStatus->getId() ? 'selected' : '' ?>>
+                                <?= htmlspecialchars($articleStatus->getTitle()) ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                    <?php if ($article->hasError('status_id')) : ?>
+                        <div class="invalid-feedback">
+                            <?= $article->getError('status_id') ?>
+                        </div>
+                    <?php endif; ?>
+                </div>
+                <div class="form-group">
+                    <label for="inputDescription">Description</label>
+                    <textarea id="inputDescription"
+                              class="form-control <?= $article->hasError('description') ? 'is-invalid' : 'is-valid' ?>"
+                              rows="4"
+                              name="description"><?= htmlspecialchars($article->getDescription() ?? '') ?></textarea>
+                    <?php if ($article->hasError('description')) : ?>
+                        <div class="invalid-feedback">
+                            <?= $article->getError('description') ?>
+                        </div>
+                    <?php endif; ?>
+                </div>
 
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-success">
-            </div>
+                <div class="form-group">
+                    <input type="submit" value="Create" class="btn btn-success">
+                </div>
         </form>
     </div>
 </div>

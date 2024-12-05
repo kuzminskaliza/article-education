@@ -134,6 +134,10 @@ abstract class BaseModel implements ORMInterface, QueryBuilderInterface
         return null;
     }
 
+    /**
+     * @param array $conditions
+     * @return object|$this
+     */
     public function findOne(array $conditions): ?object
     {
         $validConditions = array_intersect_key($conditions, array_combine($this->getAttributes(), $this->getAttributes()));
@@ -153,6 +157,10 @@ abstract class BaseModel implements ORMInterface, QueryBuilderInterface
         return null;
     }
 
+    /**
+     * @param array $conditions
+     * @return array|object[]|static[]
+     */
     public function findAll(array $conditions = []): array
     {
         $validConditions = array_intersect_key($conditions, array_combine($this->getAttributes(), $this->getAttributes()));

@@ -1,7 +1,6 @@
 <?php
-namespace backend\model;
 
-use backend\BackendApp;
+namespace backend\model;
 
 class ArticleStatus extends BaseModel
 {
@@ -32,19 +31,6 @@ class ArticleStatus extends BaseModel
             $this->errors['title'] = 'Title must be between 3-255 symbols';
         }
         return empty($this->errors);
-    }
-
-    public function getAllStatuses(): array
-    {
-        $statuses = [];
-        $query = "SELECT * FROM " . $this->getTableName();
-        $stmt = BackendApp::$pdo->query($query);
-        $results = $stmt->fetchAll();
-
-        foreach ($results as $row) {
-            $statuses[$row['id']] = $row['title'];
-        }
-        return $statuses;
     }
 
     public function getTitle(): ?string

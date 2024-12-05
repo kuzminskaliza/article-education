@@ -2,8 +2,6 @@
 
 namespace backend\model;
 
-use backend\BackendApp;
-
 class Category extends BaseModel
 {
     protected int $id;
@@ -33,19 +31,6 @@ class Category extends BaseModel
             $this->errors['name'] = 'Title must be between 3-255 symbols';
         }
         return empty($this->errors);
-    }
-
-    public function getAllCategory(): array
-    {
-        $category = [];
-        $query = "SELECT * FROM " . $this->getTableName();
-        $stmt = BackendApp::$pdo->query($query);
-        $results = $stmt->fetchAll();
-
-        foreach ($results as $row) {
-            $category[$row['id']] = $row['name'];
-        }
-        return $category;
     }
 
     public function getName(): ?string

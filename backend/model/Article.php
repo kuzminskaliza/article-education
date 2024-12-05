@@ -7,19 +7,21 @@ class Article extends BaseModel
 
     protected int $id;
     protected ?string $title = null;
-    protected ?int $status = null;
+    protected ?int $status_id = null;
     protected ?int $category_id = null;
     protected ?string $description = null;
 
-    private ArticleStatus $articleStatus;
-    private Category $category;
+    public ?ArticleStatus $articleStatus;
+    public ?Category $category;
 
     public function __construct()
     {
         parent::__construct();
+
         $this->articleStatus = new ArticleStatus();
         $this->category = new Category();
     }
+
     public function getTableName(): string
     {
         return 'article';
@@ -30,7 +32,7 @@ class Article extends BaseModel
         return [
             'id',
             'title',
-            'status',
+            'status_id',
             'category_id',
             'description',
             'updated_at',
@@ -45,20 +47,24 @@ class Article extends BaseModel
             $this->errors['title'] = 'Title is required';
         }
 
-        if (empty($this->status)) {
-            $this->errors['status'] = 'Select a status';
+        if (empty($this->status_id)) {
+            $this->errors['status_id'] = 'Select a status';
         } else {
-            $statuses = $this->articleStatus->getAllStatuses();
-            if (!array_key_exists($this->status, $statuses)) {
-                $this->errors['status'] = 'Incorrect status';
+            $statuses = $this->articleStatus->findAll();
+            $statuses = array_map(static fn($status) => $status->getId(), $statuses);
+
+            if (!in_array($this->status_id, $statuses)) {
+                $this->errors['status_id'] = 'Incorrect status';
             }
         }
 
         if (empty($this->category_id)) {
             $this->errors['category_id'] = 'Select a category';
         } else {
-            $categories = $this->category->getAllCategory();
-            if (!array_key_exists($this->category_id, $categories)) {
+            $categories = $this->category->findAll();
+            $categories = array_map(static fn($category) => $category->getId(), $categories);
+
+            if (!in_array($this->category_id, $categories)) {
                 $this->errors['category_id'] = 'Incorrect category';
             }
         }
@@ -81,8 +87,9 @@ class Article extends BaseModel
 
     public function getStatusId(): ?int
     {
-        return $this->status;
+        return $this->status_id;
     }
+
     public function getCategoryId(): ?int
     {
         return $this->category_id;
@@ -92,13 +99,22 @@ class Article extends BaseModel
     {
         return $this->description;
     }
-    public function getAllStatuses(): array
+
+    public function getArticleStatus(): ?ArticleStatus
     {
-        return $this->articleStatus->getAllStatuses();
+        if ($this->status_id) {
+            $articleStatus = $this->articleStatus->findOneById($this->status_id);
+            $this->articleStatus = $articleStatus;
+        }
+        return $this->articleStatus;
     }
 
-    public function getAllCategories(): array
+    public function getCategory(): ?Category
     {
-        return $this->category->getAllCategory();
+        if ($this->category_id) {
+            $category = $this->category->findOneById($this->category_id);
+            $this->category = $category;
+        }
+        return $this->category;
     }
 }

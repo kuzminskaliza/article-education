@@ -3,10 +3,6 @@
 use backend\model\Article;
 
 /** @var Article[] $articles */
-$article = $articles[0];
-
-$statuses = $article->getAllStatuses();
-$categories = $article->getAllCategories();
 ?>
 
 <section class="content-header">
@@ -46,8 +42,8 @@ $categories = $article->getAllCategories();
                     <td><?= $article->getId() ?></td>
                     <td><?= $article->getTitle() ?></td>
                     <td class="text-truncate modal-sm"><?= $article->getDescription() ?></td>
-                    <td><?= $statuses[$article->getStatusId()] ?? 'Unknown' ?></td>
-                    <td><?= $categories[$article->getCategoryId()] ?? 'Unknown' ?></td>
+                    <td><?= $article->getArticleStatus()->getTitle() ?></td>
+                    <td><?= $article->getCategory()->getName() ?></td>
                     <td class="project_progress"></td>
                     <td class="project-state"></td>
 
@@ -64,7 +60,7 @@ $categories = $article->getAllCategories();
                             <span>Edit</span></a>
 
                         <form action="/article/delete?id=<?= $article->getId() ?>" method="POST"
-                             class="d-xl-inline-block">
+                              class="d-xl-inline-block">
                             <button type="submit" class="btn btn-danger btn-sm"
                                     onclick="return confirm('Are you sure you want to delete the article?')">
                                 <i class="fas fa-trash"></i>

@@ -4,8 +4,6 @@ use backend\model\Article;
 
 /* @var Article $article */
 
-$statuses = $article->getAllStatuses();
-$categories = $article->getAllCategories();
 ?>
 
 <section class="content-header">
@@ -37,11 +35,11 @@ $categories = $article->getAllCategories();
             </tr>
             <tr style="border: none;">
                 <td style="border: none;"><strong>Status:</strong></td>
-                <td style="border: none;"><?= ($statuses[$article->getStatusId()] ?? 'Unknown') ?></td>
+                <td style="border: none;"><?= $article->getArticleStatus()->getTitle() ?></td>
             </tr>
             <tr style="border: none;">
                 <td style="border: none;"><strong>Category:</strong></td>
-                <td style="border: none;"><?= ($categories[$article->getCategoryId()] ?? 'Unknown') ?></td>
+                <td style="border: none;"><?= $article->getCategory()->getName() ?></td>
             </tr>
             <tr style="border: none;">
                 <td style="border: none;"><strong>Description:</strong></td>
