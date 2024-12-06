@@ -53,7 +53,7 @@ use backend\model\Admin;
     <!-- Main Sidebar Container -->
     <aside class="main-sidebar sidebar-dark-primary elevation-4">
         <!-- Brand Logo -->
-        <a href="index3.html" class="brand-link">
+        <a href="/article/index" class="brand-link">
             <img src="<?= $vendor_url; ?>dist/img/AdminLTELogo.png" alt="AdminLTE Logo"
                  class="brand-image img-circle elevation-3" style="opacity: .8">
             <span class="brand-text font-weight-light">Article Education</span>
@@ -81,7 +81,19 @@ use backend\model\Admin;
                     <li class="nav-item">
                         <a href="/article/index" class="nav-link">
                             <i class="far fa-circle nav-icon"></i>
-                            <p>Projects</p>
+                            <p>Article</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/status/index" class="nav-link">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>Article Status</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="/category/index" class="nav-link">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>Article Category</p>
                         </a>
                     </li>
                 </ul>

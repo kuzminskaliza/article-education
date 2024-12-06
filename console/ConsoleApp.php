@@ -139,7 +139,7 @@ class ConsoleApp
             return;
         }
 
-        foreach (array_reverse($executedMigrations) as $migrationClass) {
+        foreach ($executedMigrations as $migrationClass) {
             $migrationFile = __DIR__ . "/migration/{$migrationClass}.php";
 
             if (!file_exists($migrationFile)) {

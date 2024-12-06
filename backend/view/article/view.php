@@ -3,6 +3,7 @@
 use backend\model\Article;
 
 /* @var Article $article */
+
 ?>
 
 <section class="content-header">
@@ -14,7 +15,6 @@ use backend\model\Article;
         </div>
     </div>
 </section>
-
 
 <div class="card">
     <div class="card-header">
@@ -35,7 +35,11 @@ use backend\model\Article;
             </tr>
             <tr style="border: none;">
                 <td style="border: none;"><strong>Status:</strong></td>
-                <td style="border: none;"><?= $article::STATUSES[$article->getStatus()] ?></td>
+                <td style="border: none;"><?= $article->getArticleStatus()->getTitle() ?></td>
+            </tr>
+            <tr style="border: none;">
+                <td style="border: none;"><strong>Category:</strong></td>
+                <td style="border: none;"><?= $article->getCategory()->getName() ?></td>
             </tr>
             <tr style="border: none;">
                 <td style="border: none;"><strong>Description:</strong></td>

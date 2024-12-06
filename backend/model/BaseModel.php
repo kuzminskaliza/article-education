@@ -29,6 +29,7 @@ abstract class BaseModel implements ORMInterface, QueryBuilderInterface
         $result = true;
         $this->setAttributes($data);
         if ($this->validate()) {
+            $data = $this->setHashFieldsData($data);
             $dbColumns = array_intersect(array_keys($data), $this->getAttributes());
             $columns = implode(', ', $dbColumns);
             $placeholders = implode(', ', array_map(static fn($col) => ":$col", $dbColumns)); // використовуємо плейсхолдери
@@ -69,6 +70,7 @@ abstract class BaseModel implements ORMInterface, QueryBuilderInterface
         $this->setAttributes($data);
 
         if ($this->validate()) {
+            $data = $this->setHashFieldsData($data);
             // Фільтруємо атрибути, які можна оновити в базі даних
             $dbColumns = array_intersect(array_keys($data), $this->getAttributes());
 
@@ -132,9 +134,13 @@ abstract class BaseModel implements ORMInterface, QueryBuilderInterface
         return null;
     }
 
+    /**
+     * @param array $conditions
+     * @return object|$this
+     */
     public function findOne(array $conditions): ?object
     {
-        $validConditions = array_intersect_key($conditions, $this->getAttributes());
+        $validConditions = array_intersect_key($conditions, array_combine($this->getAttributes(), $this->getAttributes()));
         $whereClause = implode(' AND ', array_map(static fn($col) => "$col = :$col", array_keys($validConditions)));
 
         $query = "SELECT * FROM {$this->getTableName()} WHERE $whereClause LIMIT 1";
@@ -143,7 +149,7 @@ abstract class BaseModel implements ORMInterface, QueryBuilderInterface
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if ($result) {
-            $filteredResult = array_intersect_key($result, $this->getAttributes());
+            $filteredResult = array_intersect_key($result, array_combine($this->getAttributes(), $this->getAttributes()));
             $this->setAttributes($filteredResult);
             return $this;
         }
@@ -151,9 +157,13 @@ abstract class BaseModel implements ORMInterface, QueryBuilderInterface
         return null;
     }
 
+    /**
+     * @param array $conditions
+     * @return array|object[]|static[]
+     */
     public function findAll(array $conditions = []): array
     {
-        $validConditions = array_intersect_key($conditions, $this->getAttributes());
+        $validConditions = array_intersect_key($conditions, array_combine($this->getAttributes(), $this->getAttributes()));
         $whereClause = implode(' AND ', array_map(static fn($col) => "$col = :$col", array_keys($validConditions)));
 
         $query = "SELECT * FROM {$this->getTableName()}";
@@ -189,5 +199,10 @@ abstract class BaseModel implements ORMInterface, QueryBuilderInterface
         $stmt->execute($conditions);
 
         return (bool) $stmt->fetchColumn();
+    }
+
+    protected function setHashFieldsData(array $data): array
+    {
+        return $data;
     }
 }

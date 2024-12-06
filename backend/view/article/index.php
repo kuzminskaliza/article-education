@@ -3,7 +3,6 @@
 use backend\model\Article;
 
 /** @var Article[] $articles */
-
 ?>
 
 <section class="content-header">
@@ -29,8 +28,9 @@ use backend\model\Article;
             <tr>
                 <th style="width: 1%">Id</th>
                 <th style="width: 20%">Title</th>
-                <th style="width: 30%">Description</th>
-                <th>Status</th>
+                <th style="width: 25%">Description</th>
+                <th style="width: 15%">Status</th>
+                <th style="width: 1%">Category</th>
                 <th style="width: 8%" class="text-center"></th>
 
             </tr>
@@ -41,8 +41,9 @@ use backend\model\Article;
                 <tr>
                     <td><?= $article->getId() ?></td>
                     <td><?= $article->getTitle() ?></td>
-                    <td class="text-truncate modal-sm"><?= $article->getDescription(); ?></td>
-                    <td><?= $article::STATUSES[$article->getStatus()] ?></td>
+                    <td class="text-truncate modal-sm"><?= $article->getDescription() ?></td>
+                    <td><?= $article->getArticleStatus()->getTitle() ?></td>
+                    <td><?= $article->getCategory()->getName() ?></td>
                     <td class="project_progress"></td>
                     <td class="project-state"></td>
 
@@ -59,7 +60,7 @@ use backend\model\Article;
                             <span>Edit</span></a>
 
                         <form action="/article/delete?id=<?= $article->getId() ?>" method="POST"
-                             class="d-xl-inline-block">
+                              class="d-xl-inline-block">
                             <button type="submit" class="btn btn-danger btn-sm"
                                     onclick="return confirm('Are you sure you want to delete the article?')">
                                 <i class="fas fa-trash"></i>
@@ -73,8 +74,3 @@ use backend\model\Article;
         </table>
     </div>
 </div>
-
-
-
-
-

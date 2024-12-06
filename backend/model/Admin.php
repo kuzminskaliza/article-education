@@ -53,8 +53,6 @@ class Admin extends BaseModel
                     $this->errors['email'] = 'Email is require';
                 } elseif (!filter_var($this->email, FILTER_VALIDATE_EMAIL)) {
                     $this->errors['email'] = 'Invalid email format';
-                } elseif ($this->exist(['email' => $this->email])) {
-                    $this->errors['email'] = 'Try a different email';
                 }
             }
 
@@ -101,8 +99,11 @@ class Admin extends BaseModel
             ]);
 
             if ($admin) {
-                $_SESSION['id'] = $admin['id'];
+                $_SESSION['id'] = $admin->id;
                 return true;
+            } else {
+                $this->errors['email'] = 'Email incorrect';
+                $this->errors['password'] = 'Password incorrect';
             }
         }
 
@@ -121,6 +122,14 @@ class Admin extends BaseModel
     {
         session_unset();
         session_destroy();
+    }
+
+    protected function setHashFieldsData(array $data): array
+    {
+        if (isset($data['password'])) {
+            $data['password'] = md5($data['password']);
+        }
+        return $data;
     }
 
     public function getName(): ?string
