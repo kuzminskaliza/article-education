@@ -68,7 +68,7 @@ class CategoryController extends BaseController
         try {
             $category->delete();
         } catch (Exception $exception) {
-            return $this->render('error/400', ['message' => 'Cannot delete category in use.']);
+            return $this->render('error/404', ['message' => 'Cannot delete category in use.']);
         }
 
         $this->redirect('/category/index');

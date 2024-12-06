@@ -44,7 +44,7 @@ use backend\model\Article;
             <div class="form-group">
                 <label for="inputStatus">Status</label>
                 <select id="inputStatus"
-                        class="form-control custom-select <?= $article->hasError('status') ? 'is-invalid' : '' ?>"
+                        class="form-control custom-select <?= $article->hasError('status') ? 'is-invalid' : 'is-valid' ?>"
                         name="status_id">
                     <option selected="" disabled="">Select one</option>
                     <?php foreach ($article->getArticleStatus()->findAll() as $articleStatus) : ?>
@@ -62,7 +62,7 @@ use backend\model\Article;
             <div class="form-group">
                 <label for="inputCategory">Category</label>
                 <select id="inputCategory"
-                        class="form-control custom-select <?= $article->hasError('category_id') ? 'is-invalid' : '' ?>"
+                        class="form-control custom-select <?= $article->hasError('category_id') ? 'is-invalid' : 'is-valid' ?>"
                         name="category_id">
                     <option selected="" disabled="">Select one</option>
                     <?php foreach ($article->getCategory()->findAll() as $category) : ?>
@@ -80,7 +80,7 @@ use backend\model\Article;
             <div class="form-group">
                 <label for="inputDescription">Description</label>
                 <textarea id="inputDescription"
-                          class="form-control <?= $article->hasError('description') ? 'is-invalid' : '' ?>" rows="4"
+                          class="form-control <?= $article->hasError('description') ? 'is-invalid' : 'is-valid' ?>" rows="4"
                           name="description"><?= $article->getDescription() ?? '' ?></textarea>
                 <?php if ($article->hasError('description')) : ?>
                     <div class="invalid-feedback">

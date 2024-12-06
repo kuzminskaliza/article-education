@@ -39,24 +39,6 @@ use backend\model\Article;
                 <?php endif; ?>
 
                 <div class="form-group">
-                    <label for="inputCategory">Category</label>
-                    <select id="inputCategory"
-                            class="form-control custom-select <?= $article->hasError('category_id') ? 'is-invalid' : 'is-valid' ?>"
-                            name="category_id">
-                        <option selected="" disabled="">Select one</option>
-                        <?php foreach ($article->getCategory()->findAll() as $category) : ?>
-                            <option value="<?= $category->getId() ?>" <?= $article->getCategoryId() === $category->getId() ? 'selected' : '' ?>>
-                                <?= htmlspecialchars($category->getName()) ?>
-                            </option>
-                        <?php endforeach; ?>
-                    </select>
-                    <?php if ($article->hasError('category_id')) : ?>
-                        <div class="invalid-feedback">
-                            <?= $article->getError('category_id') ?>
-                        </div>
-                    <?php endif; ?>
-                </div>
-                <div class="form-group">
                     <label for="inputStatus">Status</label>
                     <select id="inputStatus"
                             class="form-control custom-select <?= $article->hasError('status_id') ? 'is-invalid' : 'is-valid' ?>"
@@ -71,6 +53,24 @@ use backend\model\Article;
                     <?php if ($article->hasError('status_id')) : ?>
                         <div class="invalid-feedback">
                             <?= $article->getError('status_id') ?>
+                        </div>
+                    <?php endif; ?>
+                </div>
+                <div class="form-group">
+                    <label for="inputCategory">Category</label>
+                    <select id="inputCategory"
+                            class="form-control custom-select <?= $article->hasError('category_id') ? 'is-invalid' : 'is-valid' ?>"
+                            name="category_id">
+                        <option selected="" disabled="">Select one</option>
+                        <?php foreach ($article->getCategory()->findAll() as $category) : ?>
+                            <option value="<?= $category->getId() ?>" <?= $article->getCategoryId() === $category->getId() ? 'selected' : '' ?>>
+                                <?= htmlspecialchars($category->getName()) ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                    <?php if ($article->hasError('category_id')) : ?>
+                        <div class="invalid-feedback">
+                            <?= $article->getError('category_id') ?>
                         </div>
                     <?php endif; ?>
                 </div>

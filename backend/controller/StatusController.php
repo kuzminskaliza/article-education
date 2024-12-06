@@ -1,4 +1,5 @@
 <?php
+
 namespace backend\controller;
 
 use backend\model\ArticleStatus;
@@ -47,12 +48,9 @@ class StatusController extends BaseController
             }
         }
 
-        $statusModel = new ArticleStatus();
-        $statuses = $statusModel->getAllStatuses();
 
         return $this->render('update', [
             'status' => $status,
-            'statuses' => $statuses,
         ]);
     }
 
@@ -71,7 +69,7 @@ class StatusController extends BaseController
         try {
             $status->delete();
         } catch (Exception $exception) {
-            return $this->render('error/400', ['message' => 'Cannot delete status in use.']);
+            return $this->render('error/404', ['message' => 'Cannot delete status in use.']);
         }
 
         $this->redirect('/status/index');

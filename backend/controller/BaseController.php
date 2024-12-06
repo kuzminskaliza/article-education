@@ -24,6 +24,6 @@ class BaseController
             return $view->renderTemplate($viewFilePath, $params);
         }
 
-        return 'File not found --  ' . __DIR__;
+        return 'File not found --  ' . $viewFilePath;
     }
 }
