@@ -17,7 +17,6 @@
     <h2 class="headline text-warning">405</h2>
     <div class="error-content">
         <h3><i class="fas fa-exclamation-triangle text-warning"></i> Oops! Page not found.</h3>
-        <a href="/article/index">return to List of Article</a>
+        <a href="/article/index" class="btn btn-block btn-info">return to List of Article</a>
     </div>
-
 </div>

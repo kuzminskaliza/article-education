@@ -39,7 +39,7 @@ class StatusController extends BaseController
         try {
             $status = $this->findModel();
         } catch (Exception $exception) {
-            return $this->render('error/404', ['message' => $exception->getMessage()]);
+            return $this->error($exception->getMessage(), 404);
         }
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -57,19 +57,19 @@ class StatusController extends BaseController
     public function actionDelete(): string
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            return $this->render('error/405');
+            return $this->error('Page not found', 405);
         }
 
         try {
             $status = $this->findModel();
         } catch (Exception $exception) {
-            return $this->render('error/404', ['message' => $exception->getMessage()]);
+            return $this->error($exception->getMessage(), 404);
         }
 
         try {
             $status->delete();
         } catch (Exception $exception) {
-            return $this->render('error/404', ['message' => 'Cannot delete status in use.']);
+            return $this->error('Cannot delete status in use.', 404);
         }
 
         $this->redirect('/status/index');

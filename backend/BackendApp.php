@@ -3,13 +3,14 @@
 namespace backend;
 
 use backend\controller\AdminController;
+use backend\controller\BaseController;
 use backend\model\Admin;
 use backend\view\BaseView;
 use Exception;
 use PDO;
 use PDOException;
 
-class BackendApp
+class BackendApp extends BaseController
 {
     private const string DEFAULT_CONTROLLER = 'index';
     private const string DEFAULT_ACTION = 'index';
@@ -42,7 +43,6 @@ class BackendApp
         } catch (Exception $exception) {
             throw new Exception('Не вдалось підключитись до бази даних' . $exception->getMessage());
         }
-
     }
 
     /**
@@ -100,8 +100,16 @@ class BackendApp
                 ]);
             }
         } catch (Exception $exception) {
-            // Обробка помилки
-            echo 'Помилка сервера: ' . $exception->getMessage();
+            $templateErrorPath = $this->config['params']['template_error'];
+
+            if (file_exists($templateErrorPath)) {
+                echo $this->view->renderTemplate($templateErrorPath, [
+                    'vendor_url' => $this->config['params']['vendor_url'] ?? '',
+                    'message' => 'Помилка сервера: ' . $exception->getMessage()
+                ]);
+            } else {
+                echo $this->error('Шаблон для помилки 500 не знайдено.', 500);
+            }
         }
     }
 }
