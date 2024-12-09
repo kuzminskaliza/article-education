@@ -26,4 +26,16 @@ class BaseController
 
         return 'File not found --  ' . $viewFilePath;
     }
+
+    public function error(string $message, int $code): string
+    {
+        $view = new BaseView();
+
+        $viewFilePath = __DIR__ . '/../' . 'view/template/error/' . DIRECTORY_SEPARATOR . $code . '.php';
+        if (file_exists($viewFilePath)) {
+            return $view->renderTemplate($viewFilePath, ['message' => $message]);
+        }
+
+        return 'File not found --  ' . $viewFilePath;
+    }
 }

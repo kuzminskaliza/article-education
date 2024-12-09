@@ -56,19 +56,19 @@ class CategoryController extends BaseController
     public function actionDelete(): string
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            return $this->render('error/405');
+            return $this->error('Page not found', 405);
         }
 
         try {
             $category = $this->findModel();
         } catch (Exception $exception) {
-            return $this->render('error/404', ['message' => $exception->getMessage()]);
+            return $this->error($exception->getMessage(), 404);
         }
 
         try {
             $category->delete();
         } catch (Exception $exception) {
-            return $this->render('error/404', ['message' => 'Cannot delete category in use.']);
+            return $this->error('Cannot delete category in use.', 404);
         }
 
         $this->redirect('/category/index');

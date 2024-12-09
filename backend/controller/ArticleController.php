@@ -40,7 +40,7 @@ class ArticleController extends BaseController
         try {
             $article = $this->findModel();
         } catch (Exception $exception) {
-            return $this->render('error/404', ['message' => $exception->getMessage()]);
+            return $this->error($exception->getMessage(), 404);
         }
         if ($_SERVER["REQUEST_METHOD"] == 'POST') {
             if ($article->update($_POST)) {
@@ -58,7 +58,7 @@ class ArticleController extends BaseController
         try {
             $article = $this->findModel();
         } catch (Exception $exception) {
-            return $this->render('error/404', ['message' => $exception->getMessage()]);
+            return $this->error($exception->getMessage(), 404);
         }
 
         return $this->render('view', [
@@ -69,12 +69,12 @@ class ArticleController extends BaseController
     public function actionDelete(): string
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            return $this->render('error/405');
+            return $this->error('Page not found', 405);
         }
         try {
             $article = $this->findModel();
         } catch (Exception $exception) {
-            return $this->render('error/404', ['message' => $exception->getMessage()]);
+            return $this->error($exception->getMessage(), 404);
         }
 
         $article->delete();
