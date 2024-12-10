@@ -7,6 +7,10 @@ use Exception;
 
 class BaseController
 {
+    protected const int NOT_FOUND = 404;
+    protected const int METHOD_NOT_ALLOWED = 405;
+    protected const int SERVER_ERROR = 500;
+
     public function redirect(string $url, $code = 302): void
     {
         header('Location: ' . $url, true, $code);

@@ -7,9 +7,6 @@ use Exception;
 
 class StatusController extends BaseController
 {
-    private const int NOT_FOUND = 404;
-    private const int METHOD_NOT_ALLOWED = 405;
-
     private ArticleStatus $status;
 
     public function __construct()

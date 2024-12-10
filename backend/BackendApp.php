@@ -99,12 +99,11 @@ class BackendApp
                 ]);
             }
         } catch (Exception $exception) {
-            $errorHTML = $this->view->renderTemplate($this->config['params']['template_error'], [
-                'vendor_url' => $this->config['params']['vendor_url'] ?? '',
+            $errorHtml = $this->view->renderTemplate($this->config['params']['template_error'], [
                 'message' => 'Помилка сервера: ' . $exception->getMessage()
             ]);
             echo $this->view->renderTemplate($this->config['params']['template_file'], [
-                'content' => $errorHTML,
+                'content' => $errorHtml,
                 'vendor_url' => $this->config['params']['vendor_url'] ?? '',
                 'title' => null,
                 'header' => null,
