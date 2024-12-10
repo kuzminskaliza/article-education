@@ -110,4 +110,47 @@ class BackendApp
             ]);
         }
     }
+
+    public function setErrorHandler(): void
+    {
+        ini_set('display_errors', 1);
+        ini_set('display_startup_errors', 1);
+        error_reporting(E_ALL);
+        $app = $this;
+        // Встановлюємо обробник помилок
+        set_error_handler(static function ($errno, $errstr, $errfile, $errline) use ($app) {
+            http_response_code(500); // Задаємо код статусу 500
+            echo $app->view->renderTemplate($app->config['params']['template_file'], [
+                'content' => $app->view->renderTemplate($app->config['params']['template_error'], [
+                    'message' => "Error [$errno]: $errstr in $errfile on line $errline"
+                ]),
+                'vendor_url' => $app->config['params']['vendor_url'] ?? '',
+            ]);
+        });
+        // Встановлюємо обробник виключень
+        set_exception_handler(static function ($exception) use ($app) {
+            http_response_code(500); // Задаємо код статусу 500
+            echo $app->view->renderTemplate($app->config['params']['template_file'], [
+                'content' => $app->view->renderTemplate($app->config['params']['template_error'], [
+                    'message' => $exception
+                ]),
+                'vendor_url' => $app->config['params']['vendor_url'] ?? '',
+            ]);
+        });
+
+        register_shutdown_function(static function () use ($app) {
+            $error = error_get_last();
+            if (!$error || !in_array($error['type'], [E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR])) {
+                return;
+            }
+
+            http_response_code(500); // Задаємо код статусу 500
+            echo $app->view->renderTemplate($app->config['params']['template_file'], [
+                'content' => $app->view->renderTemplate($app->config['params']['template_error'], [
+                    'message' => "Fatal error: {$error['message']} in {$error['file']} on line {$error['line']}"
+                ]),
+                'vendor_url' => $app->config['params']['vendor_url'] ?? '',
+            ]);
+        });
+    }
 }

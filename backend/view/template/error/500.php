@@ -18,16 +18,14 @@
 </section>
 
 <section class="content">
-    <div class="error-page">
+    <div class="error-page" style="width: 1000px;">
         <h2 class="headline text-danger">500</h2>
 
         <div class="error-content">
             <h3><i class="fas fa-exclamation-triangle text-danger"></i> Oops! Something went wrong.</h3>
 
             <p><?= $message ?></p>
-            <p>
-                We will work on fixing that right away.
-            </p>
+            <p>We will work on fixing that right away.</p>
             <a href="/article/index" class="btn btn-block btn-info">return to back</a>
         </div>
     </div>
