@@ -110,10 +110,27 @@ class ConsoleApp
             }
 
             $migration = new $migrationClass();
-            if (method_exists($migration, 'up')) {
-                $migration->up();
-                $this->saveMigration($migrationClass);
-                echo "Міграція $migrationClass виконана.\n";
+            if (method_exists($migration, 'safeUp')) {
+                try {
+                    ConsoleApp::$pdo->beginTransaction();
+                    $migration->safeUp();
+                    ConsoleApp::$pdo->commit();
+                    $this->saveMigration($migrationClass);
+                    echo "Міграція $migrationClass виконана";
+                } catch (Exception $exception) {
+                    ConsoleApp::$pdo->rollBack();
+                    echo "Помилка при виконанні міграції $migrationClass";
+                }
+            } elseif (method_exists($migration, 'up')) {
+                try {
+                    $migration->up();
+                    $this->saveMigration($migrationClass);
+                    echo "Міграція $migrationClass виконана.\n";
+                } catch (Exception $exception) {
+                    echo "Помилка при виконанні міграції $migrationClass: " . $exception->getMessage();
+                }
+            } else {
+                echo "Метод 'safeUp' або 'up' не знайдено в міграції $migrationClass. \n";
             }
         }
     }
@@ -154,11 +171,27 @@ class ConsoleApp
             }
 
             $migration = new $migrationClass();
-            if (method_exists($migration, 'down')) {
-                $migration->down();
-                $this->removeMigration($migrationClass);
+            if (method_exists($migration, 'safeDown')) {
+                try {
+                    ConsoleApp::$pdo->beginTransaction();
+                    $migration->safeDown();
+                    ConsoleApp::$pdo->commit();
+                    $this->removeMigration($migrationClass);
+                    echo "Міграція $migrationClass скасована\n";
+                } catch (Exception $exception) {
+                    ConsoleApp::$pdo->rollBack();
+                    echo "Помилка при скасуванні міграції $migrationClass:" . $exception->getMessage();
+                }
+            } elseif (method_exists($migration, 'down')) {
+                try {
+                    $migration->down();
+                    $this->removeMigration($migrationClass);
+                    echo "Міграція $migrationClass скасована\n";
+                } catch (Exception $exception) {
+                    echo "Помилка при скасуванні міграції $migrationClass: " . $exception->getMessage();
+                }
             } else {
-                echo "Метод 'down' відсутній у міграції $migrationClass.\n";
+                echo "Метод 'safeDown' або 'down' не знайдено в міграції $migrationClass.\n";
             }
         }
     }
@@ -183,16 +216,27 @@ use console\ConsoleApp;
 
 class {$className}
 {
+    public function safeUp(): void
+    {
+        // Код для застосування міграції
+    }
+    
     public function up(): void
     {
         // Код для застосування міграції
     }
-
+    
+    public function safeDown(): void
+    {
+        // Код для скасування міграції
+    }
+    
     public function down(): void
     {
         // Код для скасування міграції
     }
 }
+
 PHP;
 
         // Створення файлу міграції
@@ -202,7 +246,6 @@ PHP;
             echo "Помилка при створенні файлу міграції.\n";
         }
     }
-
 
     /**
      * Отримує список виконаних міграцій з бази даних.
@@ -274,7 +317,6 @@ PHP;
         $statement = self::$pdo->prepare($query);
         $statement->execute(['version' => $migration]);
     }
-
 
     /**
      * Видаляє запис про виконану міграцію з таблиці `migration`.

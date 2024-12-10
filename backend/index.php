@@ -1,9 +1,5 @@
 <?php
 
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
 use backend\BackendApp;
 
 require '../vendor/autoload.php';
@@ -18,6 +14,6 @@ if (!file_exists('config-local.php')) {
 $configLocal = require 'config-local.php'; // сетимо локальні параметри
 $config = array_merge($config, $configLocal);
 
-
-// Router дивиться куди треба піти
-(new BackendApp($config))->run();
+$application = new BackendApp($config);
+$application->setErrorHandler();
+$application->run();

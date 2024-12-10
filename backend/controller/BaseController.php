@@ -3,9 +3,14 @@
 namespace backend\controller;
 
 use backend\view\BaseView;
+use Exception;
 
 class BaseController
 {
+    protected const int NOT_FOUND = 404;
+    protected const int METHOD_NOT_ALLOWED = 405;
+    protected const int SERVER_ERROR = 500;
+
     public function redirect(string $url, $code = 302): void
     {
         header('Location: ' . $url, true, $code);
@@ -24,6 +29,18 @@ class BaseController
             return $view->renderTemplate($viewFilePath, $params);
         }
 
-        return 'File not found --  ' . $viewFilePath;
+        throw new Exception('File not found --  ' . $viewFilePath);
+    }
+
+    public function error(string $message, int $code): string
+    {
+        $view = new BaseView();
+
+        $viewFilePath = __DIR__ . '/../' . 'view/template/error/' . $code . '.php';
+        if (file_exists($viewFilePath)) {
+            return $view->renderTemplate($viewFilePath, ['message' => $message]);
+        }
+
+        throw new Exception('File not found --  ' . $viewFilePath);
     }
 }
