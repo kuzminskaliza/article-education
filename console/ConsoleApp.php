@@ -216,16 +216,27 @@ use console\ConsoleApp;
 
 class {$className}
 {
+    public function safeUp(): void
+    {
+        // Код для застосування міграції
+    }
+    
     public function up(): void
     {
         // Код для застосування міграції
     }
-
+    
+    public function safeDown(): void
+    {
+        // Код для скасування міграції
+    }
+    
     public function down(): void
     {
         // Код для скасування міграції
     }
 }
+
 PHP;
 
         // Створення файлу міграції

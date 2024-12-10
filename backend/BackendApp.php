@@ -3,14 +3,13 @@
 namespace backend;
 
 use backend\controller\AdminController;
-use backend\controller\BaseController;
 use backend\model\Admin;
 use backend\view\BaseView;
 use Exception;
 use PDO;
 use PDOException;
 
-class BackendApp extends BaseController
+class BackendApp
 {
     private const string DEFAULT_CONTROLLER = 'index';
     private const string DEFAULT_ACTION = 'index';
@@ -100,16 +99,16 @@ class BackendApp extends BaseController
                 ]);
             }
         } catch (Exception $exception) {
-            $templateErrorPath = $this->config['params']['template_error'];
-
-            if (file_exists($templateErrorPath)) {
-                echo $this->view->renderTemplate($templateErrorPath, [
-                    'vendor_url' => $this->config['params']['vendor_url'] ?? '',
-                    'message' => 'Помилка сервера: ' . $exception->getMessage()
-                ]);
-            } else {
-                echo $this->error('Шаблон для помилки 500 не знайдено.', 500);
-            }
+            $errorHTML = $this->view->renderTemplate($this->config['params']['template_error'], [
+                'vendor_url' => $this->config['params']['vendor_url'] ?? '',
+                'message' => 'Помилка сервера: ' . $exception->getMessage()
+            ]);
+            echo $this->view->renderTemplate($this->config['params']['template_file'], [
+                'content' => $errorHTML,
+                'vendor_url' => $this->config['params']['vendor_url'] ?? '',
+                'title' => null,
+                'header' => null,
+            ]);
         }
     }
 }

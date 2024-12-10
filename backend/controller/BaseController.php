@@ -3,6 +3,7 @@
 namespace backend\controller;
 
 use backend\view\BaseView;
+use Exception;
 
 class BaseController
 {
@@ -24,18 +25,18 @@ class BaseController
             return $view->renderTemplate($viewFilePath, $params);
         }
 
-        return 'File not found --  ' . $viewFilePath;
+        throw new Exception('File not found --  ' . $viewFilePath);
     }
 
     public function error(string $message, int $code): string
     {
         $view = new BaseView();
 
-        $viewFilePath = __DIR__ . '/../' . 'view/template/error/' . DIRECTORY_SEPARATOR . $code . '.php';
+        $viewFilePath = __DIR__ . '/../' . 'view/template/error/' . $code . '.php';
         if (file_exists($viewFilePath)) {
             return $view->renderTemplate($viewFilePath, ['message' => $message]);
         }
 
-        return 'File not found --  ' . $viewFilePath;
+        throw new Exception('File not found --  ' . $viewFilePath);
     }
 }

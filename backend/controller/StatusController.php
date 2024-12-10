@@ -7,6 +7,9 @@ use Exception;
 
 class StatusController extends BaseController
 {
+    private const int NOT_FOUND = 404;
+    private const int METHOD_NOT_ALLOWED = 405;
+
     private ArticleStatus $status;
 
     public function __construct()
@@ -39,7 +42,7 @@ class StatusController extends BaseController
         try {
             $status = $this->findModel();
         } catch (Exception $exception) {
-            return $this->error($exception->getMessage(), 404);
+            return $this->error($exception->getMessage(), self::NOT_FOUND);
         }
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -57,7 +60,7 @@ class StatusController extends BaseController
     public function actionDelete(): string
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            return $this->error('Page not found', 405);
+            return $this->error('Page not found', self::METHOD_NOT_ALLOWED);
         }
 
         try {
@@ -69,7 +72,7 @@ class StatusController extends BaseController
         try {
             $status->delete();
         } catch (Exception $exception) {
-            return $this->error('Cannot delete status in use.', 404);
+            return $this->error('Cannot delete status in use.', self::NOT_FOUND);
         }
 
         $this->redirect('/status/index');

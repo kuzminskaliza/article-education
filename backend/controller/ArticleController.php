@@ -7,6 +7,9 @@ use Exception;
 
 class ArticleController extends BaseController
 {
+    private const int NOT_FOUND = 404;
+    private const int METHOD_NOT_ALLOWED = 405;
+
     private Article $article;
 
     public function __construct()
@@ -40,7 +43,7 @@ class ArticleController extends BaseController
         try {
             $article = $this->findModel();
         } catch (Exception $exception) {
-            return $this->error($exception->getMessage(), 404);
+            return $this->error($exception->getMessage(), self::NOT_FOUND);
         }
         if ($_SERVER["REQUEST_METHOD"] == 'POST') {
             if ($article->update($_POST)) {
@@ -58,7 +61,7 @@ class ArticleController extends BaseController
         try {
             $article = $this->findModel();
         } catch (Exception $exception) {
-            return $this->error($exception->getMessage(), 404);
+            return $this->error($exception->getMessage(), self::NOT_FOUND);
         }
 
         return $this->render('view', [
@@ -69,12 +72,12 @@ class ArticleController extends BaseController
     public function actionDelete(): string
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            return $this->error('Page not found', 405);
+            return $this->error('Page not found', self::METHOD_NOT_ALLOWED);
         }
         try {
             $article = $this->findModel();
         } catch (Exception $exception) {
-            return $this->error($exception->getMessage(), 404);
+            return $this->error($exception->getMessage(), self::NOT_FOUND);
         }
 
         $article->delete();

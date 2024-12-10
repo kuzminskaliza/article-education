@@ -7,6 +7,9 @@ use Exception;
 
 class CategoryController extends BaseController
 {
+    private const int NOT_FOUND = 404;
+    private const int METHOD_NOT_ALLOWED = 405;
+
     private Category $category;
 
     public function __construct()
@@ -56,19 +59,19 @@ class CategoryController extends BaseController
     public function actionDelete(): string
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            return $this->error('Page not found', 405);
+            return $this->error('Page not found', self::METHOD_NOT_ALLOWED);
         }
 
         try {
             $category = $this->findModel();
         } catch (Exception $exception) {
-            return $this->error($exception->getMessage(), 404);
+            return $this->error($exception->getMessage(), self::NOT_FOUND);
         }
 
         try {
             $category->delete();
         } catch (Exception $exception) {
-            return $this->error('Cannot delete category in use.', 404);
+            return $this->error('Cannot delete category in use.', self::NOT_FOUND);
         }
 
         $this->redirect('/category/index');
