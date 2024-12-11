@@ -26,6 +26,9 @@ use backend\model\Admin;
     <link rel="stylesheet" href="<?= $vendor_url; ?>plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
     <!-- Theme style -->
     <link rel="stylesheet" href="<?= $vendor_url; ?>dist/css/adminlte.min.css">
+    <!-- Select2 -->
+    <link rel="stylesheet" href="<?= $vendor_url; ?>plugins/select2/css/select2.min.css">
+    <link rel="stylesheet" href="<?= $vendor_url; ?>plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
 </head>
 <body class="hold-transition dark-mode sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
 <div class="wrapper">
@@ -127,6 +130,8 @@ use backend\model\Admin;
 <script src="<?= $vendor_url; ?>plugins/jquery/jquery.min.js"></script>
 <!-- Bootstrap -->
 <script src="<?= $vendor_url; ?>plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+<!-- Select2 -->
+<script src="<?= $vendor_url; ?>plugins/select2/js/select2.full.min.js"></script>
 <!-- overlayScrollbars -->
 <script src="<?= $vendor_url; ?>plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
 <!-- AdminLTE App -->
@@ -141,6 +146,11 @@ use backend\model\Admin;
 <!-- ChartJS -->
 <script src="<?= $vendor_url; ?>plugins/chart.js/Chart.min.js"></script>
 
-<script src="<?= $vendor_url; ?>dist/js/pages/dashboard2.js"></script>
+<script>
+    $(function () {
+        //Initialize Select2 Elements
+        $('.select2').select2()
+    })
+</script>
 </body>
 </html>
