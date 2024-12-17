@@ -3,6 +3,7 @@
 namespace backend\controller;
 
 use backend\model\Article;
+use backend\model\search\ArticleSearch;
 use Exception;
 
 class ArticleController extends BaseController
@@ -16,8 +17,11 @@ class ArticleController extends BaseController
 
     public function actionIndex(): string
     {
+        $searchModel = new ArticleSearch();
+
         return $this->render('index', [
-            'articles' => $this->article->findAll()
+            'articles' => $searchModel->search($_GET),
+            'searchModel' => $searchModel
         ]);
     }
 

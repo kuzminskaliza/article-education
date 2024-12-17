@@ -168,7 +168,7 @@ abstract class BaseModel implements ORMInterface, QueryBuilderInterface
 
         $query = "SELECT * FROM {$this->getTableName()}";
         if (!empty($whereClause)) {
-            $query .= "WHERE $whereClause";
+            $query .= " WHERE $whereClause";
         }
 
         $stmt = $this->pdo->prepare($query);
@@ -204,5 +204,23 @@ abstract class BaseModel implements ORMInterface, QueryBuilderInterface
     protected function setHashFieldsData(array $data): array
     {
         return $data;
+    }
+
+    public function findByQueryBuilder(QueryBuilder $builder): array
+    {
+        $query = $builder->build();
+        $stmt = $this->pdo->prepare($query);
+        $stmt->execute($builder->getParams());
+        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        $objects = [];
+        foreach ($results as $result) {
+            $filteredResult = array_intersect_key($result, array_combine($this->getAttributes(), $this->getAttributes()));
+            $object = new static();
+            $object->setAttributes($filteredResult);
+            $objects[] = $object;
+        }
+
+        return $objects;
     }
 }

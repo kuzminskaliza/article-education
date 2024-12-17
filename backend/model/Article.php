@@ -75,8 +75,12 @@ class Article extends BaseModel
         return empty($this->errors);
     }
 
-    public function getId(): int
+    public function getId(): ?int
     {
+        if (!isset($this->id)) {
+            return null;
+        }
+
         return $this->id;
     }
 
