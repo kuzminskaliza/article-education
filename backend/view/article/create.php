@@ -43,7 +43,7 @@ use backend\model\Article;
                 <select id="inputStatus"
                         class="form-control custom-select <?= $article->hasError('status_id') ? 'is-invalid' : 'is-valid' ?>"
                         name="status_id">
-                    <option selected="" disabled="">Select one</option>
+
                     <?php foreach ($article->getArticleStatus()->findAll() as $articleStatus) : ?>
                         <option value="<?= $articleStatus->getId() ?>" <?= $article->getStatusId() === $articleStatus->getId() ? 'selected' : '' ?>>
                             <?= htmlspecialchars($articleStatus->getTitle()) ?>
@@ -61,7 +61,7 @@ use backend\model\Article;
                 <select id="inputCategory"
                         class="form-control custom-select <?= $article->hasError('category_id') ? 'is-invalid' : 'is-valid' ?>"
                         name="category_id">
-                    <option selected="" disabled="">Select one</option>
+
                     <?php foreach ($article->getCategory()->findAll() as $category) : ?>
                         <option value="<?= $category->getId() ?>" <?= $article->getCategoryId() === $category->getId() ? 'selected' : '' ?>>
                             <?= htmlspecialchars($category->getName()) ?>
