@@ -2,17 +2,20 @@
 
 namespace backend\model;
 
+use Exception;
+
 class Article extends BaseModel
 {
 
-    protected int $id;
+    protected ?int $id;
     protected ?string $title = null;
     protected ?int $status_id = null;
-    protected ?int $category_id = null;
+    protected array $category_ids = [];
     protected ?string $description = null;
 
     public ?ArticleStatus $articleStatus;
     public ?Category $category;
+    protected ?ArticleCategory $articleCategory;
 
     public function __construct()
     {
@@ -20,6 +23,7 @@ class Article extends BaseModel
 
         $this->articleStatus = new ArticleStatus();
         $this->category = new Category();
+        $this->articleCategory = new ArticleCategory();
     }
 
     public function getTableName(): string
@@ -33,7 +37,6 @@ class Article extends BaseModel
             'id',
             'title',
             'status_id',
-            'category_id',
             'description',
             'updated_at',
             'created_at',
@@ -58,14 +61,16 @@ class Article extends BaseModel
             }
         }
 
-        if (empty($this->category_id)) {
-            $this->errors['category_id'] = 'Select a category';
+        if (empty($this->category_ids)) {
+            $this->errors['category_ids'] = 'At least one category must be selected';
         } else {
             $categories = $this->category->findAll();
-            $categories = array_map(static fn($category) => $category->getId(), $categories);
+            $categoryIds = array_map(static fn($category) => $category->getId(), $categories);
 
-            if (!in_array($this->category_id, $categories)) {
-                $this->errors['category_id'] = 'Incorrect category';
+            foreach ($this->category_ids as $categoryId) {
+                if (!in_array($categoryId, $categoryIds)) {
+                    $this->errors['category_ids'][] = 'Invalid category selected';
+                }
             }
         }
 
@@ -75,8 +80,11 @@ class Article extends BaseModel
         return empty($this->errors);
     }
 
-    public function getId(): int
+    public function getId(): ?int
     {
+        if (!isset($this->id)) {
+            return null;
+        }
         return $this->id;
     }
 
@@ -88,11 +96,6 @@ class Article extends BaseModel
     public function getStatusId(): ?int
     {
         return $this->status_id;
-    }
-
-    public function getCategoryId(): ?int
-    {
-        return $this->category_id;
     }
 
     public function getDescription(): ?string
@@ -109,12 +112,73 @@ class Article extends BaseModel
         return $this->articleStatus;
     }
 
-    public function getCategory(): ?Category
+    /**
+     * @return array|ArticleCategory[]
+     */
+
+    public function getCategories(): array
     {
-        if ($this->category_id) {
-            $category = $this->category->findOneById($this->category_id);
-            $this->category = $category;
+        return $this->articleCategory->findAll(['article_id' => $this->getId()]);
+    }
+
+    public function safeCreate(array $post): bool
+    {
+        $this->setAttributes($post);
+        if ($this->validate()) {
+            try {
+                $this->pdo->beginTransaction();
+                $this->insert($post);
+                foreach ($this->getCategoryIds() as $categoryId) {
+                    $articleCategory = new ArticleCategory();
+                    $articleCategory->insert(['article_id' => $this->getId(), 'category_id' => $categoryId]);
+                }
+                $this->pdo->commit();
+            } catch (Exception $exception) {
+                $this->pdo->rollBack();
+                $this->errors['category_ids'] = $exception->getMessage();
+                return false;
+            }
+            return true;
         }
-        return $this->category;
+        return false;
+    }
+
+    public function safeUpdate(array $post): bool
+    {
+        $this->setAttributes($post);
+
+        if ($this->validate()) {
+            try {
+                $this->pdo->beginTransaction();
+                $this->update($post);
+                $articleCategory = new ArticleCategory();
+                $currentCategories = $articleCategory->findAll(['article_id' => $this->getId()]);
+
+                $currentCategoryIds = array_map(static fn($articleCategory) => $articleCategory->getCategoryId(), $currentCategories);
+                $newCategoryIds = $this->getCategoryIds();
+
+                $categoriesToDelete = array_diff($currentCategoryIds, $newCategoryIds);
+                foreach ($categoriesToDelete as $categoryId) {
+                    $articleCategory->deleteAll(['article_id' => $this->getId(), 'category_id' => $categoryId]);
+                }
+                $categoriesToAdd = array_diff($newCategoryIds, $currentCategoryIds);
+                foreach ($categoriesToAdd as $categoryId) {
+                    $articleCategory->insert(['article_id' => $this->getId(), 'category_id' => $categoryId]);
+                }
+
+                $this->pdo->commit();
+            } catch (Exception $exception) {
+                $this->pdo->rollBack();
+                $this->errors['category_ids'] = $exception->getMessage();
+                return false;
+            }
+            return true;
+        }
+        return false;
+    }
+
+    public function getCategoryIds(): array
+    {
+        return $this->category_ids;
     }
 }

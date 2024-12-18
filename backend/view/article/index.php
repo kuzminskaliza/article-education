@@ -1,8 +1,10 @@
 <?php
 
 use backend\model\Article;
+use backend\model\search\ArticleSearch;
 
 /** @var Article[] $articles */
+/** @var ArticleSearch $searchModel */
 ?>
 
 <section class="content-header">
@@ -19,7 +21,74 @@ use backend\model\Article;
     <div class="card-header">
         <h3 class="card-title">
             <a href="/article/create" class="btn btn-block btn-success">Add an article</a>
-        </h3>
+        </h3> &nbsp;
+
+        <button class="btn btn-primary" type="button"
+                data-toggle="collapse" data-target="#filterSearch"
+                data-expanded="false" aria-controls="filterSearch">
+            Filter
+        </button>
+        <div id="filterSearch" class="collapse">
+            <div>
+                <form action="/article/index" method="get">
+                    <div class="form-group">
+                        <label for="inputName">ID</label>
+                        <input
+                                type="text"
+                                id="inputName"
+                                class="form-control <?= $searchModel->hasError('id') ? 'is-invalid' : 'is-valid' ?>"
+                                name="ArticleSearch[id]"
+                                value="<?= $searchModel->getId() ?? '' ?>">
+
+                        <?php if ($searchModel->hasError('id')) : ?>
+                            <div class="invalid-feedback">
+                                <?= $searchModel->getError('id') ?>
+                            </div>
+                        <?php endif; ?>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="inputName">Title of the article</label>
+                        <input
+                                type="text"
+                                id="inputName"
+                                class="form-control <?= $searchModel->hasError('title') ? 'is-invalid' : 'is-valid' ?>"
+                                name="ArticleSearch[title]"
+                                value="<?= $searchModel->getTitle() ?? '' ?>">
+
+                        <?php if ($searchModel->hasError('title')) : ?>
+                            <div class="invalid-feedback">
+                                <?= $searchModel->getError('title') ?>
+                            </div>
+                        <?php endif; ?>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="inputStatus">Status</label>
+                        <select id="inputStatus"
+                                class="form-control custom-select <?= $searchModel->hasError('status_id') ? 'is-invalid' : 'is-valid' ?>"
+                                name="ArticleSearch[status_id]">
+                            <option selected="" disabled="">Select one</option>
+                            <?php foreach ($searchModel->getArticleStatus()->findAll() as $articleStatus) : ?>
+                                <option value="<?= $articleStatus->getId() ?>" <?= $searchModel->getStatusId() === $articleStatus->getId() ? 'selected' : '' ?>>
+                                    <?= htmlspecialchars($articleStatus->getTitle()) ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                        <?php if ($searchModel->hasError('status_id')) : ?>
+                            <div class="invalid-feedback">
+                                <?= $searchModel->getError('status_id') ?>
+                            </div>
+                        <?php endif; ?>
+                    </div>
+
+                    <div class="form-group">
+                        <input type="submit" value="Search" class="btn btn-primary">
+                        <a class="btn btn-default" href="/article/index">Reset</a>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
 
     <div class="card-body p-0">
@@ -43,7 +112,11 @@ use backend\model\Article;
                     <td><?= $article->getTitle() ?></td>
                     <td class="text-truncate modal-sm"><?= $article->getDescription() ?></td>
                     <td><?= $article->getArticleStatus()->getTitle() ?></td>
-                    <td><?= $article->getCategory()->getName() ?></td>
+                    <td>
+                        <?php foreach ($article->getCategories() as $articleCategory) : ?>
+                            <?= htmlspecialchars($articleCategory->getCategory()->getName()) ?><br>
+                        <?php endforeach; ?>
+                    </td>
                     <td class="project_progress"></td>
                     <td class="project-state"></td>
 
