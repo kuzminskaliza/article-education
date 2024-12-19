@@ -14,7 +14,7 @@ abstract class BaseModel implements ORMInterface, QueryBuilderInterface
 
     abstract public function getAttributes(): array;
 
-    protected function primaryKey(): string
+    protected function primaryKey(): string|array
     {
         return 'id';
     }
@@ -33,14 +33,21 @@ abstract class BaseModel implements ORMInterface, QueryBuilderInterface
             $dbColumns = array_intersect(array_keys($data), $this->getAttributes());
             $columns = implode(', ', $dbColumns);
             $placeholders = implode(', ', array_map(static fn($col) => ":$col", $dbColumns)); // використовуємо плейсхолдери
-            $query = "INSERT INTO {$this->getTableName()} ( $columns ) VALUES ( $placeholders ) RETURNING {$this->primaryKey()}";
+            $query = "INSERT INTO {$this->getTableName()} ( $columns ) VALUES ( $placeholders )";
+            if (is_string($this->primaryKey())) {
+                $query .= "RETURNING {$this->primaryKey()}";
+            }
             $stmt = $this->pdo->prepare($query);
             // Підставляємо значення за допомогою асоціативного масиву
             $params = array_combine(array_map(static fn($col) => ":$col", $dbColumns), array_map(static fn($col) => $data[$col], $dbColumns));
             $stmt->execute($params);
             $entity = $stmt->fetch(PDO::FETCH_ASSOC);
 
-            if (property_exists($this, $this->primaryKey()) && !empty($entity[$this->primaryKey()])) {
+            if (
+                is_string($this->primaryKey())
+                && property_exists($this, $this->primaryKey())
+                && !empty($entity[$this->primaryKey()])
+            ) {
                 $this->{$this->primaryKey()} = $entity[$this->primaryKey()];
             }
         } else {
@@ -108,6 +115,35 @@ abstract class BaseModel implements ORMInterface, QueryBuilderInterface
         return $stmt->execute([":$primaryKey" => $this->$primaryKey]);
     }
 
+    public function deleteAll(array $attributes = []): bool
+    {
+        if (empty($attributes)) {
+            $primaryKey = $this->primaryKey();
+            if (is_array($primaryKey)) {
+                $conditions = [];
+                $params = [];
+                foreach ($primaryKey as $key) {
+                    $conditions[] = "$key = :$key";
+                    $params[":$key"] = $this->$key;
+                }
+                $whereClause = implode(' AND ', $conditions);
+            } else {
+                $whereClause = "$primaryKey = :$primaryKey";
+                $params = [":$primaryKey" => $this->$primaryKey];
+            }
+        } else {
+            $conditions = [];
+            $params = [];
+            foreach ($attributes as $key => $value) {
+                $conditions[] = "$key = :$key";
+                $params[":$key"] = $value;
+            }
+            $whereClause = implode(' AND ', $conditions);
+        }
+        $stmt = BackendApp::$pdo->prepare("DELETE FROM {$this->getTableName()} WHERE $whereClause");
+        return $stmt->execute($params);
+    }
+
     public function getError(string $attribute): ?string
     {
         return $this->errors[$attribute] ?? null;
@@ -168,7 +204,7 @@ abstract class BaseModel implements ORMInterface, QueryBuilderInterface
 
         $query = "SELECT * FROM {$this->getTableName()}";
         if (!empty($whereClause)) {
-            $query .= "WHERE $whereClause";
+            $query .= " WHERE $whereClause";
         }
 
         $stmt = $this->pdo->prepare($query);
@@ -204,5 +240,23 @@ abstract class BaseModel implements ORMInterface, QueryBuilderInterface
     protected function setHashFieldsData(array $data): array
     {
         return $data;
+    }
+
+    public function findByQueryBuilder(QueryBuilder $builder): array
+    {
+        $query = $builder->build();
+        $stmt = $this->pdo->prepare($query);
+        $stmt->execute($builder->getParams());
+        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        $objects = [];
+        foreach ($results as $result) {
+            $filteredResult = array_intersect_key($result, array_combine($this->getAttributes(), $this->getAttributes()));
+            $object = new static();
+            $object->setAttributes($filteredResult);
+            $objects[] = $object;
+        }
+
+        return $objects;
     }
 }

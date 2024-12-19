@@ -1,8 +1,10 @@
 <?php
 
 use backend\model\Article;
+use backend\model\Category;
 
 /* @var Article $article */
+/* @var Category $category */
 ?>
 
 <section class="content-header">
@@ -57,22 +59,27 @@ use backend\model\Article;
                 <?php endif; ?>
             </div>
             <div class="form-group">
-                <label for="inputCategory">Category</label>
-                <select id="inputCategory"
-                        class="form-control custom-select <?= $article->hasError('category_id') ? 'is-invalid' : 'is-valid' ?>"
-                        name="category_id">
-                    <option selected="" disabled="">Select one</option>
-                    <?php foreach ($article->getCategory()->findAll() as $category) : ?>
-                        <option value="<?= $category->getId() ?>" <?= $article->getCategoryId() === $category->getId() ? 'selected' : '' ?>>
-                            <?= htmlspecialchars($category->getName()) ?>
-                        </option>
-                    <?php endforeach; ?>
-                </select>
-                <?php if ($article->hasError('category_id')) : ?>
-                    <div class="invalid-feedback">
-                        <?= $article->getError('category_id') ?>
-                    </div>
-                <?php endif; ?>
+                <label>Categories</label>
+                <div class="select2-purple">
+                    <select name="category_ids[]"
+                            class="select2 <?= $article->hasError('category_ids') ? 'is-invalid' : 'is-valid' ?>"
+                            multiple=""
+                            data-placeholder="Select categories"
+                            data-dropdown-css-class="select2-purple"
+                            style="width: 100%;">
+                        <?php foreach ($category->findAll() as $category) : ?>
+                            <option value="<?= $category->getId() ?>"
+                                <?= in_array($category->getId(), $article->getCategoryIds()) ? 'selected' : '' ?>>
+                                <?= htmlspecialchars($category->getName()) ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                    <?php if ($article->hasError('category_ids')) : ?>
+                        <div class="invalid-feedback">
+                            <?= $article->getError('category_ids') ?>
+                        </div>
+                    <?php endif; ?>
+                </div>
             </div>
             <div class="form-group">
                 <label for="inputDescription">Description</label>
