@@ -4,6 +4,8 @@ namespace backend\model;
 
 class QueryBuilder
 {
+    private const int HARD_CONDITION_ARRAY = 3;
+
     protected string $table;
     protected string $alias = '';
     protected array $select = ['*'];
@@ -31,7 +33,7 @@ class QueryBuilder
         return $this;
     }
 
-    public function join(string $table, array $on, string $type = 'INNER'): self
+    public function join(string $table, array $on, string $type = 'LEFT'): self
     {
         $conditions = [];
         foreach ($on as $column1 => $column2) {
@@ -49,13 +51,13 @@ class QueryBuilder
 
     public function andWhere(array|string $condition): self
     {
-        $this->where[] = ['AND', $condition];
+        $this->where[] = [' AND ', $condition];
         return $this;
     }
 
     public function orWhere(array|string $condition): self
     {
-        $this->where[] = ['OR', $condition];
+        $this->where[] = [' OR ', $condition];
         return $this;
     }
 
@@ -73,12 +75,53 @@ class QueryBuilder
 
     public function filterWhere(array $condition): self
     {
+        $this->where = [];
         foreach ($condition as $column => $value) {
             if (is_string($column)) {
-                if ($value !== null && $value !== '') {
+                if ($value !== null && $value !== '' && $value !== []) {
                     $this->where([$column => $value]);
                 }
+            } elseif (is_int($column) && is_array($value) && count($value) == self::HARD_CONDITION_ARRAY) {
+                $typeCondition = strtoupper($value[0]);
+                $columnCondition = $value[1];
+                $valueCondition = $value[2];
+
+                if ($valueCondition !== null && $valueCondition !== '') {
+                    if (in_array($typeCondition, ['LIKE', 'ILIKE']) && trim($valueCondition, '%') !== '') {
+                        $this->where[] = [$typeCondition, [$columnCondition => $valueCondition]];
+                    } else {
+                        $this->where[] = [$typeCondition, [$columnCondition => $valueCondition]];
+                    }
+                }
             }
+        }
+        return $this;
+    }
+
+    public function orFilterWhere(array $condition): self
+    {
+        $conditions = [];
+        foreach ($condition as $column => $value) {
+            if (is_string($column)) {
+                if ($value !== null && $value !== '' && $value !== []) {
+                    $conditions[] = [$column => $value];
+                }
+            } elseif (is_int($column) && is_array($value) && count($value) == self::HARD_CONDITION_ARRAY) {
+                $typeCondition = strtoupper($value[0]);
+                $columnCondition = $value[1];
+                $valueCondition = $value[2];
+
+                if ($valueCondition !== null && $valueCondition !== '') {
+                    if (in_array($typeCondition, ['LIKE', 'ILIKE']) && trim($valueCondition, '%') !== '') {
+                        $conditions[] = [$typeCondition, [$columnCondition => $valueCondition]];
+                    } else {
+                        $conditions[] = [$typeCondition, [$columnCondition => $valueCondition]];
+                    }
+                }
+            }
+        }
+        if (!empty($condition)) {
+            $this->where[] = ['OR', $conditions];
         }
         return $this;
     }
@@ -150,10 +193,41 @@ class QueryBuilder
         $conditions = [];
         foreach ($this->where as [$type, $condition]) {
             if (is_array($condition)) {
-                foreach ($condition as $column => $value) {
-                    $placeholder = ":param" . count($this->params);
-                    $conditions[] = "$column = $placeholder";
-                    $this->params[$placeholder] = $value;
+                if ($type == 'OR') {
+                    $orConditions = [];
+                    foreach ($condition as $value) {
+                        if (count($value) == 2) {
+                            $subType = $value[0];
+                            $subValue = $value[1];
+                            $placeholder = ":param" . count($this->params);
+                            $orConditions[] = key($subValue) . " $subType $placeholder";
+                            $this->params[$placeholder] = current($subValue);
+                        } else {
+                            $placeholder = ":param" . count($this->params);
+                            $orConditions[] = key($value) . " $placeholder";
+                            $this->params[$placeholder] = current($value);
+                        }
+                    }
+                    $conditions[] = '(' . implode(' OR ', $orConditions) . ')';
+                } else {
+                    foreach ($condition as $column => $value) {
+                        if (is_array($value)) {
+                            $placeholders = [];
+                            foreach ($value as $item) {
+                                $placeholder = ":param" . count($this->params);
+                                $placeholders[] = $placeholder;
+                                $this->params[$placeholder] = $item;
+                            }
+                            $conditions[] = $column . ' IN (' . implode(', ', $placeholders) . ')';
+                        } else {
+                            if ($type === '') {
+                                $type = '=';
+                            }
+                            $placeholder = ":param" . count($this->params);
+                            $conditions[] = "$column $type $placeholder";
+                            $this->params[$placeholder] = $value;
+                        }
+                    }
                 }
             } else {
                 $conditions[] = $condition;
@@ -164,6 +238,6 @@ class QueryBuilder
             return is_array($item) ? implode(' ', $item) : $item;
         }, $conditions);
 
-        return implode(' ', $items);
+        return implode(' AND ', $items);
     }
 }

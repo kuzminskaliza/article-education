@@ -28,6 +28,7 @@ class ArticleController extends BaseController
         return $this->render('index', [
             'articles' => $searchModel->search($_GET),
             'searchModel' => $searchModel,
+            'category' => $this->category
         ]);
     }
 
