@@ -31,7 +31,7 @@ use backend\view\BaseView;
                 data-expanded="false" aria-controls="filterSearch">
             Filter
         </button>
-        <?= $this->render('/article/_search', ['searchModel' => $searchModel, 'category' => $category])?>
+        <?= $this->render('/article/_search', ['searchModel' => $searchModel, 'category' => $category]) ?>
     </div>
 
     <div class="card-body p-0">
@@ -64,19 +64,15 @@ use backend\view\BaseView;
                     </td>
                     <td class="project_progress"></td>
                     <td class="project-state"></td>
-
                     <td class="project-actions text-right">
-
                         <a class="btn btn-primary btn-sm"
                            href="/article/view?id=<?= $article->getId() ?>">
                             <i class="fas fa-folder"> </i>
                             <span>View</span></a>
-
                         <a class="btn btn-warning btn-sm"
                            href="/article/update?id=<?= $article->getId() ?>">
                             <i class="fas fa-pencil-alt"></i>
                             <span>Edit</span></a>
-
                         <form action="/article/delete?id=<?= $article->getId() ?>" method="POST"
                               class="d-xl-inline-block">
                             <button type="submit" class="btn btn-danger btn-sm"

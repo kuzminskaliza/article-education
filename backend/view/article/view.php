@@ -39,9 +39,10 @@ use backend\model\Article;
             </tr>
             <tr style="border: none;">
                 <td style="border: none;"><strong>Category:</strong></td>
-                <td style="border: none;"> <?php foreach ($article->getCategories() as $articleCategory) : ?>
+                <td style="border: none;">
+                    <?php foreach ($article->getCategories() as $articleCategory) : ?>
                         <?= htmlspecialchars($articleCategory->getCategory()->getName()) ?><br>
-                                           <?php endforeach; ?></td>
+                    <?php endforeach; ?></td>
             </tr>
             <tr style="border: none;">
                 <td style="border: none;"><strong>Description:</strong></td>
