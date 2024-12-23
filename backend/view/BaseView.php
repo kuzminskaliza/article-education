@@ -23,4 +23,13 @@ class BaseView
         // Повертаємо відрендерений контент
         return ob_get_clean();
     }
+
+    public function render(string $viewName, array $variables = []): false|string
+    {
+        $template = __DIR__  . $viewName . '.php';
+        if (file_exists($template)) {
+            return $this->renderTemplate($template, $variables);
+        }
+        return false;
+    }
 }

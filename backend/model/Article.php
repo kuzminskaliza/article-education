@@ -6,7 +6,6 @@ use Exception;
 
 class Article extends BaseModel
 {
-
     protected ?int $id;
     protected ?string $title = null;
     protected ?int $status_id = null;
@@ -154,7 +153,7 @@ class Article extends BaseModel
                 $articleCategory = new ArticleCategory();
                 $currentCategories = $articleCategory->findAll(['article_id' => $this->getId()]);
 
-                $currentCategoryIds = array_map(static fn($articleCategory) => $articleCategory->getCategoryId(), $currentCategories);
+                $currentCategoryIds = array_map(static fn($categoryItem) => $categoryItem->getCategoryId(), $currentCategories);
                 $newCategoryIds = $this->getCategoryIds();
 
                 $categoriesToDelete = array_diff($currentCategoryIds, $newCategoryIds);

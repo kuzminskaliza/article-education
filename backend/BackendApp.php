@@ -7,7 +7,6 @@ use backend\model\Admin;
 use backend\view\BaseView;
 use Exception;
 use PDO;
-use PDOException;
 
 class BackendApp
 {
@@ -25,6 +24,8 @@ class BackendApp
      */
     public function __construct(array $config)
     {
+        ini_set('session.gc_maxlifetime', 15000);
+        session_set_cookie_params(15000);
         session_start();
         $this->config = $config;
         $this->view = new BaseView();

@@ -116,10 +116,10 @@ class ConsoleApp
                     $migration->safeUp();
                     ConsoleApp::$pdo->commit();
                     $this->saveMigration($migrationClass);
-                    echo "Міграція $migrationClass виконана";
+                    echo "Міграція $migrationClass виконана\n";
                 } catch (Exception $exception) {
                     ConsoleApp::$pdo->rollBack();
-                    echo "Помилка при виконанні міграції $migrationClass";
+                    echo "Помилка при виконанні міграції $migrationClass\n";
                 }
             } elseif (method_exists($migration, 'up')) {
                 try {

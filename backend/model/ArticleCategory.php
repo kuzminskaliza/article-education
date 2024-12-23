@@ -36,6 +36,21 @@ class ArticleCategory extends BaseModel
         ];
     }
 
+    public function validate(array $attributes = []): bool
+    {
+        $this->errors = [];
+
+        if (!is_numeric($this->article_id)) {
+            $this->errors['article_id'] = 'article_id must be numeric';
+        }
+
+        if (!is_numeric($this->category_id)) {
+            $this->errors['category_id'] = 'category_id must be numeric';
+        }
+
+        return empty($this->errors);
+    }
+
     public function getCategory(): ?Category
     {
         return $this->category->findOne(['id' => $this->category_id]);
@@ -44,5 +59,10 @@ class ArticleCategory extends BaseModel
     public function getCategoryId(): ?int
     {
         return $this->category_id;
+    }
+
+    public function getArticleId(): ?int
+    {
+        return $this->article_id;
     }
 }

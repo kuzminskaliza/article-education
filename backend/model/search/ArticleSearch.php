@@ -13,7 +13,7 @@ class ArticleSearch extends Article
     public function validate(array $attributes = []): bool
     {
         $this->errors = [];
-        if (!empty($this->getId()) && !is_numeric($this->getId())) {
+        if ($this->getId() !== null && !is_numeric($this->getId())) {
             $this->errors['id'] = 'The ID must be a numeric value';
         }
         if (!empty($this->title) && strlen($this->title) < 3 || strlen($this->title) > 255) {
@@ -22,7 +22,7 @@ class ArticleSearch extends Article
         if (!empty($this->category_name) && strlen($this->category_name) < 3) {
             $this->errors['category_name'] = 'The categories must be at leans 3 characters';
         }
-        return true;
+        return empty($this->errors);
     }
 
     public function castAttributes(array $data): array
@@ -72,7 +72,7 @@ class ArticleSearch extends Article
 
     public function getStatusIds(): ?array
     {
-        return  $this->status_ids;
+        return $this->status_ids;
     }
 
     public function getCategoryName(): ?string

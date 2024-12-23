@@ -6,8 +6,7 @@ class m20241210190456_create_table_article_category
 {
     public function safeUp(): void
     {
-        $query = "
-            CREATE TABLE IF NOT EXISTS article_category (
+        $query = "CREATE TABLE IF NOT EXISTS article_category (
                 article_id INT NOT NULL,
                 category_id INT NOT NULL,
                 PRIMARY KEY (article_id, category_id),

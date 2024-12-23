@@ -3,7 +3,6 @@
 namespace backend\controller;
 
 use backend\model\Article;
-use backend\model\ArticleCategory;
 use backend\model\Category;
 use backend\model\search\ArticleSearch;
 use Exception;
@@ -11,13 +10,11 @@ use Exception;
 class ArticleController extends BaseController
 {
     private Article $article;
-    private ArticleCategory $articleCategory;
     private Category $category;
 
     public function __construct()
     {
         $this->article = new Article();
-        $this->articleCategory = new ArticleCategory();
         $this->category = new Category();
     }
 
