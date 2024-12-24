@@ -3,34 +3,43 @@
 namespace backend\controller;
 
 use backend\model\Article;
+use backend\model\Category;
+use backend\model\search\ArticleSearch;
 use Exception;
 
 class ArticleController extends BaseController
 {
     private Article $article;
+    private Category $category;
 
     public function __construct()
     {
         $this->article = new Article();
+        $this->category = new Category();
     }
 
     public function actionIndex(): string
     {
+        $searchModel = new ArticleSearch();
+
         return $this->render('index', [
-            'articles' => $this->article->findAll()
+            'articles' => $searchModel->search($_GET),
+            'searchModel' => $searchModel,
+            'category' => $this->category
         ]);
     }
 
     public function actionCreate(): string
     {
         if ($_SERVER["REQUEST_METHOD"] == 'POST') {
-            if ($this->article->insert($_POST)) {
+            if ($this->article->safeCreate($_POST)) {
                 $this->redirect('/article/index');
             }
         }
 
         return $this->render('create', [
             'article' => $this->article,
+            'category' => $this->category,
 
         ]);
     }
@@ -43,13 +52,14 @@ class ArticleController extends BaseController
             return $this->error($exception->getMessage(), self::NOT_FOUND);
         }
         if ($_SERVER["REQUEST_METHOD"] == 'POST') {
-            if ($article->update($_POST)) {
+            if ($article->safeUpdate($_POST)) {
                 $this->redirect('/article/index');
             }
         }
 
         return $this->render('update', [
             'article' => $article,
+            'category' => $this->category,
         ]);
     }
 

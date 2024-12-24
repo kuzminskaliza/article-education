@@ -1,8 +1,14 @@
 <?php
 
 use backend\model\Article;
+use backend\model\Category;
+use backend\model\search\ArticleSearch;
+use backend\view\BaseView;
 
+/** @var BaseView $this */
 /** @var Article[] $articles */
+/** @var ArticleSearch $searchModel */
+/** @var Category $category */
 ?>
 
 <section class="content-header">
@@ -19,7 +25,13 @@ use backend\model\Article;
     <div class="card-header">
         <h3 class="card-title">
             <a href="/article/create" class="btn btn-block btn-success">Add an article</a>
-        </h3>
+        </h3> &nbsp;
+        <button class="btn btn-primary" type="button"
+                data-toggle="collapse" data-target="#filterSearch"
+                data-expanded="false" aria-controls="filterSearch">
+            Filter
+        </button>
+        <?= $this->render('/article/_search', ['searchModel' => $searchModel, 'category' => $category]) ?>
     </div>
 
     <div class="card-body p-0">
@@ -43,22 +55,24 @@ use backend\model\Article;
                     <td><?= $article->getTitle() ?></td>
                     <td class="text-truncate modal-sm"><?= $article->getDescription() ?></td>
                     <td><?= $article->getArticleStatus()->getTitle() ?></td>
-                    <td><?= $article->getCategory()->getName() ?></td>
+                    <td>
+                        <?php foreach ($article->getCategories() as $articleCategory) : ?>
+                            <div class="text-truncate">
+                                <?= htmlspecialchars($articleCategory->getCategory()->getName()) ?><br>
+                            </div>
+                        <?php endforeach; ?>
+                    </td>
                     <td class="project_progress"></td>
                     <td class="project-state"></td>
-
                     <td class="project-actions text-right">
-
                         <a class="btn btn-primary btn-sm"
                            href="/article/view?id=<?= $article->getId() ?>">
                             <i class="fas fa-folder"> </i>
                             <span>View</span></a>
-
                         <a class="btn btn-warning btn-sm"
                            href="/article/update?id=<?= $article->getId() ?>">
                             <i class="fas fa-pencil-alt"></i>
                             <span>Edit</span></a>
-
                         <form action="/article/delete?id=<?= $article->getId() ?>" method="POST"
                               class="d-xl-inline-block">
                             <button type="submit" class="btn btn-danger btn-sm"
