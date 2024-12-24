@@ -42,7 +42,8 @@ use backend\model\Article;
                 <td style="border: none;">
                     <?php foreach ($article->getCategories() as $articleCategory) : ?>
                         <?= htmlspecialchars($articleCategory->getCategory()->getName()) ?><br>
-                    <?php endforeach; ?></td>
+                    <?php endforeach; ?>
+                </td>
             </tr>
             <tr style="border: none;">
                 <td style="border: none;"><strong>Description:</strong></td>

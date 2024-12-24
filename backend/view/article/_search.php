@@ -6,16 +6,6 @@ use backend\model\search\ArticleSearch;
 /** @var ArticleSearch $searchModel */
 /** @var Category $category */
 ?>
-<style>
-    input[type="text"], select, textarea {
-        color: #000 !important;
-    }
-
-    .select2-container--default .select2-search__field,
-    .select2-container--default .select2-selection__rendered {
-        color: #000 !important;
-    }
-</style>
 <div id="filterSearch" class="collapse">
     <div>
         <form action="/article/index" method="get">
