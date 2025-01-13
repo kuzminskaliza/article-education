@@ -102,6 +102,7 @@ class Article extends BaseModel
         return $this->description;
     }
 
+
     public function getArticleStatus(): ?ArticleStatus
     {
         if ($this->status_id) {
