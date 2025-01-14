@@ -7,6 +7,7 @@ use backend\model\Admin;
 use backend\view\BaseView;
 use Exception;
 use PDO;
+use Redis;
 
 class BackendApp
 {
@@ -17,6 +18,7 @@ class BackendApp
     private array $config;
     private BaseView $view;
     public static PDO $pdo;
+    public static Redis $redis;
 
     /**
      * @param array $config
@@ -30,6 +32,7 @@ class BackendApp
         $this->config = $config;
         $this->view = new BaseView();
         $this->initDb();
+        $this->initRedis();
     }
 
     /**
@@ -42,6 +45,19 @@ class BackendApp
             self::$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         } catch (Exception $exception) {
             throw new Exception('Не вдалось підключитись до бази даних' . $exception->getMessage());
+        }
+    }
+
+    /**
+     * @throws Exception
+     */
+    private function initRedis(): void
+    {
+        try {
+            self::$redis = new Redis();
+            self::$redis->connect($this->config['redis']['host'], $this->config['redis']['port']);
+        } catch (Exception $exception) {
+            throw new Exception('Не вдалось підключитись до Redis' . $exception->getMessage());
         }
     }
 

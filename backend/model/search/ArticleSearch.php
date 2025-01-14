@@ -44,6 +44,8 @@ class ArticleSearch extends Article
 
     public function search(array $get): array
     {
+        $a = $this->redis->get('article_id8');
+        json_decode($a, true);
         if (empty($get['ArticleSearch'])) {
             return $this->findAll();
         }

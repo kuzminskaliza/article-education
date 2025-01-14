@@ -4,10 +4,12 @@ namespace backend\model;
 
 use backend\BackendApp;
 use PDO;
+use Redis;
 
 abstract class BaseModel implements ORMInterface, QueryBuilderInterface
 {
     protected PDO $pdo;
+    protected Redis $redis;
     protected array $errors = [];
 
     abstract public function getTableName(): string;
@@ -22,6 +24,7 @@ abstract class BaseModel implements ORMInterface, QueryBuilderInterface
     public function __construct()
     {
         $this->pdo = BackendApp::$pdo;
+        $this->redis = BackendApp::$redis;
     }
 
     public function insert(array $data): bool

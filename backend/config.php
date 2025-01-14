@@ -12,6 +12,10 @@ return [
         'username' => 'username',
         'password' => 'password'
     ],
+    'redis' => [
+        'host' => 'host',
+        'port' => 'port',
+    ],
     'route' => [
 
     ],

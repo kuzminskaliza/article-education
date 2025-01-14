@@ -137,6 +137,9 @@ class Article extends BaseModel
                 $this->errors['category_ids'] = $exception->getMessage();
                 return false;
             }
+            $this->redis->set('article_id' . $this->id, json_encode(['id' => $this->getId(), 'title' => $this->getTitle()]), 360);
+            $this->redis->del('article_id' . $this->id);
+            $this->redis->exists('article_id' . $this->id);
             return true;
         }
         return false;
