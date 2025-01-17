@@ -7,7 +7,7 @@ use backend\model\Admin;
 /* @var string $content */
 /* @var string $vendor_url */
 
-
+/* @var Admin $admin */
 ?>
 
 <!DOCTYPE html>
@@ -67,10 +67,17 @@ use backend\model\Admin;
             <div class="user-panel mt-3 pb-3 mb-3 d-flex">
                 <div class="image"></div>
                 <div class="info">
+                    <div class="text-center">
+<!--                        --><?php //if ($admin->getPhoto()) : ?>
+<!--                            <img src="--><?php //= $admin->getPhoto() ?><!--" alt="Admin Photo" style="width: 20px; height: 20px;">-->
+<!--                        --><?php //endif; ?>
+                    </div>
                     <?php $admin = Admin::getAuthAdmin(); ?>
                     <?php if ($admin) : ?>
-                        <span class="d-block"><?= $admin->getName() ?></span>
-                        <span class="d-block"><?= $admin->getEmail() ?></span>
+                        <a href="/admin/view">
+                            <span class="d-block"><?= $admin->getName() ?></span>
+                            <span class="d-block"><?= $admin->getEmail() ?></span>
+                        </a>
                     <?php endif; ?>
                     <a href="/admin/logout" class="d-block">Logout</a>
                 </div>
@@ -164,6 +171,7 @@ use backend\model\Admin;
     .dark-mode textarea:-webkit-autofill:hover {
         -webkit-text-fill-color: #000;
     }
+
     .select2-container--default .select2-search__field {
         color: #000 !important;
     }
