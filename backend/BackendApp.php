@@ -69,7 +69,12 @@ class BackendApp
                 return;
             }
 
-            if ($admin && $controllerName === AdminController::class && $actionName !== 'actionLogout') {
+            if (
+                $admin && $controllerName === AdminController::class
+                && $actionName !== 'actionLogout'
+                && $actionName !== 'actionView'
+                && $actionName !== 'actionPassword'
+            ) {
                 $controller = new AdminController();
                 $controller->redirect('/index/index');
                 return;
