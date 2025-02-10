@@ -12,14 +12,15 @@ class GitHubApiClient
 
     public function __construct()
     {
-        $config = include __DIR__ . '/../config-token-uri.php';
+        $config = include __DIR__ . '/../config-local.php';
 
         $this->apiKey = $config['github_api_token'] ?? '';
         $baseUri = $config['github_api_url'] ?? '';
+        $timeout = $config['timeout'];
 
         $this->client = new Client([
             'base_uri' => $baseUri,
-            'timeout' => 5.0,
+            'timeout' => $timeout,
         ]);
     }
 
