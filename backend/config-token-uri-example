@@ -1,0 +1,6 @@
+<?php
+
+return [
+    'github_api_token' => 'your_token',
+    'github_api_url' => 'https://api.github.com/',
+];
