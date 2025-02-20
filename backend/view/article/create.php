@@ -2,9 +2,11 @@
 
 use backend\model\Article;
 use backend\model\Category;
+use backend\model\ArticleTag;
 
 /* @var Article $article */
 /* @var Category $category */
+/* @var ArticleTag $articleTag */
 ?>
 
 <section class="content-header">
@@ -82,6 +84,28 @@ use backend\model\Category;
                 </div>
             </div>
             <div class="form-group">
+                <label>Tags</label>
+                <div id="tag-container">
+                    <div class="input-group mb-3 tag-input">
+                        <input type="text"
+                               name="tags[0]"
+                               class="form-control <?= $article->hasError('tags') ? 'is-invalid' : 'is-valid' ?>"
+                               value="<?= $articleTag->getTag() ?? '' ?>">
+                        <div class="input-group-append">
+                            <span class="input-group-text remove-tag"><i class="fas fa-times"></i></span>
+                        </div>
+                    </div>
+                </div>
+                <?php if ($article->hasError('tags')) : ?>
+                    <div class="invalid-feedback d-block">
+                        <?= $article->getError('tags') ?>
+                    </div>
+                <?php endif; ?>
+            </div>
+            <div class="form-group">
+                <button id="addTag" type="button" class="btn btn-info">Add tag</button>
+            </div>
+            <div class="form-group">
                 <label for="inputDescription">Description</label>
                 <textarea id="inputDescription"
                           class="form-control <?= $article->hasError('description') ? 'is-invalid' : 'is-valid' ?>"
@@ -101,3 +125,5 @@ use backend\model\Category;
     </div>
 </div>
 
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script src="../../web/js/tags.js"></script>

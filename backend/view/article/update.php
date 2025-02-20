@@ -2,9 +2,11 @@
 
 use backend\model\Article;
 use backend\model\Category;
+use backend\model\ArticleTag;
 
 /* @var Article $article */
 /* @var Category $category */
+/* @var ArticleTag $articleTag */
 $categoryIds = array_map(static fn($articleCategory) => $articleCategory->getCategoryId(), $article->getCategories());
 ?>
 
@@ -64,7 +66,8 @@ $categoryIds = array_map(static fn($articleCategory) => $articleCategory->getCat
             <div class="form-group">
                 <label>Categories</label>
                 <div class="select2-purple">
-                    <select name="category_ids[]" class="select2 <?= $article->hasError('category_ids') ? 'is-invalid' : 'is-valid' ?>"
+                    <select name="category_ids[]"
+                            class="select2 <?= $article->hasError('category_ids') ? 'is-invalid' : 'is-valid' ?>"
                             multiple=""
                             data-placeholder="Select categories"
                             data-dropdown-css-class="select2-purple"
@@ -85,9 +88,33 @@ $categoryIds = array_map(static fn($articleCategory) => $articleCategory->getCat
                 </div>
             </div>
             <div class="form-group">
+                <label>Tags</label>
+                <div id="tag-container">
+                    <?php foreach ($article->getTags() as $index => $tag) : ?>
+                        <div class="input-group mb-3 tag-input">
+                            <input type="text"
+                                   name="tags[<?= $index ?>]"
+                                   class="form-control <?= $article->hasError('tags') ? 'is-invalid' : 'is-valid' ?>"
+                                   value="<?= $tag->getTag() ?>">
+                            <div class="input-group-append">
+                                <span class="input-group-text remove-tag"><i class="fas fa-times"></i></span>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+                <?php if ($article->hasError('tags')) : ?>
+                        <div class="invalid-feedback d-block">
+                            <?= $article->getError('tags') ?>
+                        </div>
+                <?php endif; ?>
+                <div class="form-group">
+                <button id="addTag" type="button" class="btn btn-info">Add tag</button>
+            </div>
+            <div class="form-group">
                 <label for="inputDescription">Description</label>
                 <textarea id="inputDescription"
-                          class="form-control <?= $article->hasError('description') ? 'is-invalid' : 'is-valid' ?>" rows="4"
+                          class="form-control <?= $article->hasError('description') ? 'is-invalid' : 'is-valid' ?>"
+                          rows="4"
                           name="description"><?= $article->getDescription() ?? '' ?></textarea>
                 <?php if ($article->hasError('description')) : ?>
                     <div class="invalid-feedback">
@@ -103,3 +130,5 @@ $categoryIds = array_map(static fn($articleCategory) => $articleCategory->getCat
     </div>
 </div>
 
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script src="../../web/js/tags.js"></script>
