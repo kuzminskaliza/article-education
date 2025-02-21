@@ -2,11 +2,9 @@
 
 use backend\model\Article;
 use backend\model\Category;
-use backend\model\ArticleTag;
 
 /* @var Article $article */
 /* @var Category $category */
-/* @var ArticleTag $articleTag */
 ?>
 
 <section class="content-header">
@@ -86,25 +84,36 @@ use backend\model\ArticleTag;
             <div class="form-group">
                 <label>Tags</label>
                 <div id="tag-container">
-                    <div class="input-group mb-3 tag-input">
-                        <input type="text"
-                               name="tags[0]"
-                               class="form-control <?= $article->hasError('tags') ? 'is-invalid' : 'is-valid' ?>"
-                               value="<?= $articleTag->getTag() ?? '' ?>">
-                        <div class="input-group-append">
-                            <span class="input-group-text remove-tag"><i class="fas fa-times"></i></span>
+                    <?php
+                    // це потрібно для того щоб при завантажені сторінки був одие пустий інпут, через це я і додала, не знаю чи є це правильним але нехай тут буде поки
+                    $tags = $article->getTagsName();
+                    if (empty($tags)) {
+                        $tags = [''];
+                    }
+                    ?>
+                    <?php foreach ($tags as $index => $tag): ?>
+                        <div class="input-group mb-3 tag-input">
+                            <input type="text"
+                                   name="tags[<?= $index ?>]"
+                                   class="form-control <?= $article->hasError("tags[$index]") ? 'is-invalid' : '' ?>"
+                                   value="<?= htmlspecialchars($tag) ?>">
+                            <div class="input-group-append">
+                                <span class="input-group-text remove-tag"><i class="fas fa-times"></i></span>
+                            </div>
+                            <?php if ($article->hasError("tags[$index]")) : ?>
+                                <div class="invalid-feedback">
+                                    <?= $article->getError("tags[$index]") ?>
+                                </div>
+                            <?php endif; ?>
                         </div>
-                    </div>
+                    <?php endforeach; ?>
                 </div>
-                <?php if ($article->hasError('tags')) : ?>
-                    <div class="invalid-feedback d-block">
-                        <?= $article->getError('tags') ?>
-                    </div>
-                <?php endif; ?>
+
+                <div class="form-group">
+                    <button id="addTag" type="button" class="btn btn-info">Add tag</button>
+                </div>
             </div>
-            <div class="form-group">
-                <button id="addTag" type="button" class="btn btn-info">Add tag</button>
-            </div>
+
             <div class="form-group">
                 <label for="inputDescription">Description</label>
                 <textarea id="inputDescription"

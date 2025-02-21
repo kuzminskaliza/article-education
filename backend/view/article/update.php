@@ -2,12 +2,12 @@
 
 use backend\model\Article;
 use backend\model\Category;
-use backend\model\ArticleTag;
 
 /* @var Article $article */
 /* @var Category $category */
-/* @var ArticleTag $articleTag */
+
 $categoryIds = array_map(static fn($articleCategory) => $articleCategory->getCategoryId(), $article->getCategories());
+$tags = $_POST['tags'] ?? array_map(fn($tag) => $tag->getTagName(), $article->getTags());
 ?>
 
 <section class="content-header">
@@ -90,42 +90,48 @@ $categoryIds = array_map(static fn($articleCategory) => $articleCategory->getCat
             <div class="form-group">
                 <label>Tags</label>
                 <div id="tag-container">
-                    <?php foreach ($article->getTags() as $index => $tag) : ?>
+                    <?php foreach ($tags as $index => $tag) : ?>
                         <div class="input-group mb-3 tag-input">
                             <input type="text"
                                    name="tags[<?= $index ?>]"
-                                   class="form-control <?= $article->hasError('tags') ? 'is-invalid' : 'is-valid' ?>"
-                                   value="<?= $tag->getTag() ?>">
+                                   class="form-control <?= $article->hasError("tags[$index]") ? 'is-invalid' : '' ?>"
+                                   value="<?= htmlspecialchars($tag) ?>">
                             <div class="input-group-append">
                                 <span class="input-group-text remove-tag"><i class="fas fa-times"></i></span>
                             </div>
+                            <?php if ($article->hasError("tags[$index]")) : ?>
+                                <div class="invalid-feedback">
+                                    <?= $article->getError("tags[$index]") ?>
+                                </div>
+                            <?php endif; ?>
                         </div>
                     <?php endforeach; ?>
                 </div>
+
                 <?php if ($article->hasError('tags')) : ?>
-                        <div class="invalid-feedback d-block">
-                            <?= $article->getError('tags') ?>
-                        </div>
-                <?php endif; ?>
-                <div class="form-group">
-                <button id="addTag" type="button" class="btn btn-info">Add tag</button>
-            </div>
-            <div class="form-group">
-                <label for="inputDescription">Description</label>
-                <textarea id="inputDescription"
-                          class="form-control <?= $article->hasError('description') ? 'is-invalid' : 'is-valid' ?>"
-                          rows="4"
-                          name="description"><?= $article->getDescription() ?? '' ?></textarea>
-                <?php if ($article->hasError('description')) : ?>
-                    <div class="invalid-feedback">
-                        <?= $article->getError('description') ?>
+                    <div class="invalid-feedback d-block">
+                        <?= $article->getError('tags') ?>
                     </div>
                 <?php endif; ?>
-            </div>
+                <div class="form-group">
+                    <button id="addTag" type="button" class="btn btn-info">Add tag</button>
+                </div>
+                <div class="form-group">
+                    <label for="inputDescription">Description</label>
+                    <textarea id="inputDescription"
+                              class="form-control <?= $article->hasError('description') ? 'is-invalid' : 'is-valid' ?>"
+                              rows="4"
+                              name="description"><?= $article->getDescription() ?? '' ?></textarea>
+                    <?php if ($article->hasError('description')) : ?>
+                        <div class="invalid-feedback">
+                            <?= $article->getError('description') ?>
+                        </div>
+                    <?php endif; ?>
+                </div>
 
-            <div class="form-group">
-                <input type="submit" value="Edit" class="btn btn-success">
-            </div>
+                <div class="form-group">
+                    <input type="submit" value="Edit" class="btn btn-success">
+                </div>
         </form>
     </div>
 </div>

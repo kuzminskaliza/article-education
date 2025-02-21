@@ -49,7 +49,7 @@ use backend\model\Article;
                 <td style="border: none;"><strong>Tags:</strong></td>
                 <td style="border: none;">
                     <?php foreach ($article->getTags() as $articleTag) : ?>
-                            <?= $articleTag->getTag() ?><br>
+                        <?= $articleTag->getTagName() ?><br>
                     <?php endforeach; ?>
                 </td>
             </tr>

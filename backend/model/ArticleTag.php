@@ -5,7 +5,7 @@ namespace backend\model;
 class ArticleTag extends BaseModel
 {
     protected int $id;
-    protected ?string $tag = null;
+    protected ?string $title = null;
 
     public function getTableName(): string
     {
@@ -17,7 +17,7 @@ class ArticleTag extends BaseModel
         return [
             'id',
             'article_id',
-            'tag',
+            'title',
             'created_at',
             'updated_at'
         ];
@@ -26,15 +26,15 @@ class ArticleTag extends BaseModel
     public function validate(array $attributes = []): bool
     {
         $this->errors = [];
-        if (empty($this->tag)) {
+        if (empty($this->title)) {
             $this->errors['tag'] = 'Tag is required';
         }
         return empty($this->errors);
     }
 
-    public function getTag(): ?string
+    public function getTagName(): ?string
     {
-        return $this->tag;
+        return $this->title;
     }
 
     public function getId(): int

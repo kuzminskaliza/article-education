@@ -81,15 +81,15 @@ class Article extends BaseModel
         }
 
         if (empty($this->tags)) {
-            $this->errors['tags'] = 'At least one tag must be filled';
+            $this->errors['tags'][] = 'At least one tag must be filled';
         } else {
-            foreach ($this->tags as $tag) {
+            foreach ($this->tags as $index => $tag) {
                 if (empty($tag)) {
-                    $this->errors['tags'] = 'Tag is required';
+                    $this->errors["tags[$index]"] = 'Tag is required';
                 } elseif (strlen($tag) < 3 || strlen($tag) > 50) {
-                    $this->errors['tags'] = 'Tag must be between 3-50 symbols';
+                    $this->errors["tags[$index]"] = 'Tag must be between 3-50 symbols';
                 } elseif (str_contains($tag, ' ')) {
-                    $this->errors['tags'] = 'Tag must not contain spaces';
+                    $this->errors["tags[$index]"] = 'Tag must not contain spaces';
                 }
             }
         }
@@ -148,9 +148,9 @@ class Article extends BaseModel
                     $articleCategory = new ArticleCategory();
                     $articleCategory->insert(['article_id' => $this->getId(), 'category_id' => $categoryId]);
                 }
-                foreach ($this->getTagIds() as $tagTitle) {
+                foreach ($this->getTagsName() as $tagTitle) {
                     $articleTag = new ArticleTag();
-                    $articleTag->insert(['article_id' => $this->getId(), 'tag' => $tagTitle]);
+                    $articleTag->insert(['article_id' => $this->getId(), 'title' => $tagTitle]);
                 }
                 $this->pdo->commit();
             } catch (Exception $exception) {
@@ -189,16 +189,21 @@ class Article extends BaseModel
                 $articleTag = new ArticleTag();
                 $currentTags = $articleTag->findAll(['article_id' => $this->getId()]);
 
-                $currentTagIds = array_map(static fn($tagItem) => $tagItem->getId(), $currentTags);
-                $newTagIds = $this->getTagIds();
-
-                $tagsToDelete = array_diff($currentTagIds, $newTagIds);
-                foreach ($tagsToDelete as $tagId) {
-                    $articleTag->deleteAll(['id' => $tagId]);
+                $currentTagMap = [];
+                foreach ($currentTags as $tagItem) {
+                    $currentTagMap[$tagItem->getId()] = $tagItem->getTagName();
                 }
-                $tagsToAdd = array_diff($newTagIds, $currentTagIds);
-                foreach ($tagsToAdd as $tagTitle) {
-                    $articleTag->insert(['article_id' => $this->getId(), 'tag' => $tagTitle]);
+                $newTagTitles = $this->getTagsName();
+
+                foreach ($currentTagMap as $tagId => $tagTitle) {
+                    if (!in_array($tagTitle, $newTagTitles, true)) {
+                        $articleTag->deleteAll(['id' => $tagId]);
+                    }
+                }
+                foreach ($newTagTitles as $tagTitle) {
+                    if (!in_array($tagTitle, $currentTagMap, true)) {
+                        $articleTag->insert(['article_id' => $this->getId(), 'title' => $tagTitle]);
+                    }
                 }
                 $this->pdo->commit();
             } catch (Exception $exception) {
@@ -216,7 +221,7 @@ class Article extends BaseModel
         return $this->category_ids;
     }
 
-    public function getTagIds(): array
+    public function getTagsName(): array
     {
         return $this->tags;
     }

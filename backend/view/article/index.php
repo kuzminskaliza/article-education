@@ -4,13 +4,12 @@ use backend\model\Article;
 use backend\model\Category;
 use backend\model\search\ArticleSearch;
 use backend\view\BaseView;
-use backend\model\ArticleTag;
 
 /** @var BaseView $this */
 /** @var Article[] $articles */
 /** @var ArticleSearch $searchModel */
 /** @var Category $category */
-/** @var ArticleTag $articleTag */
+
 ?>
 
 <section class="content-header">
@@ -68,7 +67,7 @@ use backend\model\ArticleTag;
                     <td>
                         <?php foreach ($article->getTags() as $articleTag) : ?>
                             <div class="text-truncate">
-                                <?= $articleTag->getTag() ?><br>
+                                <?= $articleTag->getTagName() ?><br>
                             </div>
                         <?php endforeach; ?>
                     </td>
