@@ -85,7 +85,6 @@ use backend\model\Category;
                 <label>Tags</label>
                 <div id="tag-container">
                     <?php
-                    // це потрібно для того щоб при завантажені сторінки був одие пустий інпут, через це я і додала, не знаю чи є це правильним але нехай тут буде поки
                     $tags = $article->getTagsName();
                     if (empty($tags)) {
                         $tags = [''];

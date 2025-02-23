@@ -3,7 +3,6 @@
 namespace backend\controller;
 
 use backend\model\Article;
-use backend\model\ArticleTag;
 use backend\model\Category;
 use backend\model\search\ArticleSearch;
 use Exception;
@@ -12,13 +11,11 @@ class ArticleController extends BaseController
 {
     private Article $article;
     private Category $category;
-    private ArticleTag $articleTag;
 
     public function __construct()
     {
         $this->article = new Article();
         $this->category = new Category();
-        $this->articleTag = new ArticleTag();
     }
 
     public function actionIndex(): string
@@ -43,7 +40,6 @@ class ArticleController extends BaseController
         return $this->render('create', [
             'article' => $this->article,
             'category' => $this->category,
-            'articleTag' => $this->articleTag,
         ]);
     }
 
@@ -63,7 +59,6 @@ class ArticleController extends BaseController
         return $this->render('update', [
             'article' => $article,
             'category' => $this->category,
-            'articleTag' => $this->articleTag,
         ]);
     }
 

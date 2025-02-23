@@ -21,8 +21,6 @@ class m20250221121956_create_table_article_tag
         $query = "CREATE INDEX idx_article_id ON article_tag (article_id)";
         ConsoleApp::$pdo->exec($query);
 
-        $query = "CREATE INDEX idx_tag ON article_tag (title)";
-        ConsoleApp::$pdo->exec($query);
     }
 
     public function safeDown(): void

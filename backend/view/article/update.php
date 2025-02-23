@@ -108,14 +108,10 @@ $tags = $_POST['tags'] ?? array_map(fn($tag) => $tag->getTagName(), $article->ge
                     <?php endforeach; ?>
                 </div>
 
-                <?php if ($article->hasError('tags')) : ?>
-                    <div class="invalid-feedback d-block">
-                        <?= $article->getError('tags') ?>
-                    </div>
-                <?php endif; ?>
                 <div class="form-group">
                     <button id="addTag" type="button" class="btn btn-info">Add tag</button>
                 </div>
+
                 <div class="form-group">
                     <label for="inputDescription">Description</label>
                     <textarea id="inputDescription"

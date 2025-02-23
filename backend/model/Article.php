@@ -195,15 +195,9 @@ class Article extends BaseModel
                 }
                 $newTagTitles = $this->getTagsName();
 
-                foreach ($currentTagMap as $tagId => $tagTitle) {
-                    if (!in_array($tagTitle, $newTagTitles, true)) {
-                        $articleTag->deleteAll(['id' => $tagId]);
-                    }
-                }
+                $articleTag->deleteAll(['article_id' => $this->getId()]);
                 foreach ($newTagTitles as $tagTitle) {
-                    if (!in_array($tagTitle, $currentTagMap, true)) {
-                        $articleTag->insert(['article_id' => $this->getId(), 'title' => $tagTitle]);
-                    }
+                    $articleTag->insert(['article_id' => $this->getId(), 'title' => $tagTitle]);
                 }
                 $this->pdo->commit();
             } catch (Exception $exception) {
