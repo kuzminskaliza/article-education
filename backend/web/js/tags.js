@@ -77,5 +77,8 @@ $(document).ready(function () {
             }
         }
     };
-    tagForm.init();
+
+    if ($('.article-form').length) {
+        tagForm.init();
+    }
 });

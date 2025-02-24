@@ -187,12 +187,7 @@ class Article extends BaseModel
                 }
 
                 $articleTag = new ArticleTag();
-                $currentTags = $articleTag->findAll(['article_id' => $this->getId()]);
 
-                $currentTagMap = [];
-                foreach ($currentTags as $tagItem) {
-                    $currentTagMap[$tagItem->getId()] = $tagItem->getTagName();
-                }
                 $newTagTitles = $this->getTagsName();
 
                 $articleTag->deleteAll(['article_id' => $this->getId()]);

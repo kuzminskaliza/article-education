@@ -168,5 +168,6 @@ use backend\model\Admin;
         color: #000 !important;
     }
 </style>
+<script src="../../web/js/tags.js"></script>
 </body>
 </html>
