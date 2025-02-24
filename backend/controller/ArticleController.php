@@ -40,7 +40,6 @@ class ArticleController extends BaseController
         return $this->render('create', [
             'article' => $this->article,
             'category' => $this->category,
-
         ]);
     }
 

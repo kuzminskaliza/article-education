@@ -9,6 +9,7 @@ use backend\view\BaseView;
 /** @var Article[] $articles */
 /** @var ArticleSearch $searchModel */
 /** @var Category $category */
+
 ?>
 
 <section class="content-header">
@@ -42,8 +43,9 @@ use backend\view\BaseView;
                 <th style="width: 20%">Title</th>
                 <th style="width: 25%">Description</th>
                 <th style="width: 15%">Status</th>
-                <th style="width: 1%">Category</th>
-                <th style="width: 8%" class="text-center"></th>
+                <th style="width: 10%">Category</th>
+                <th style="width: 5%">Tags</th>
+                <th style="width: 5%" class="text-center"></th>
 
             </tr>
             </thead>
@@ -59,6 +61,13 @@ use backend\view\BaseView;
                         <?php foreach ($article->getCategories() as $articleCategory) : ?>
                             <div class="text-truncate">
                                 <?= htmlspecialchars($articleCategory->getCategory()->getName()) ?><br>
+                            </div>
+                        <?php endforeach; ?>
+                    </td>
+                    <td>
+                        <?php foreach ($article->getTags() as $articleTag) : ?>
+                            <div class="text-truncate">
+                                <?= $articleTag->getTagName() ?><br>
                             </div>
                         <?php endforeach; ?>
                     </td>

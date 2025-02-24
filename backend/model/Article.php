@@ -10,11 +10,13 @@ class Article extends BaseModel
     protected ?string $title = null;
     protected ?int $status_id = null;
     protected array $category_ids = [];
+    protected array $tags = [];
     protected ?string $description = null;
 
     public ?ArticleStatus $articleStatus;
     public ?Category $category;
     protected ?ArticleCategory $articleCategory;
+    public ?ArticleTag $articleTag;
 
     public function __construct()
     {
@@ -23,6 +25,7 @@ class Article extends BaseModel
         $this->articleStatus = new ArticleStatus();
         $this->category = new Category();
         $this->articleCategory = new ArticleCategory();
+        $this->articleTag = new ArticleTag();
     }
 
     public function getTableName(): string
@@ -75,6 +78,20 @@ class Article extends BaseModel
 
         if (empty($this->description)) {
             $this->errors['description'] = 'Description is required';
+        }
+
+        if (empty($this->tags)) {
+            $this->errors['tags'][] = 'At least one tag must be filled';
+        } else {
+            foreach ($this->tags as $index => $tag) {
+                if (empty($tag)) {
+                    $this->errors["tags[$index]"] = 'Tag is required';
+                } elseif (strlen($tag) < 3 || strlen($tag) > 50) {
+                    $this->errors["tags[$index]"] = 'Tag must be between 3-50 symbols';
+                } elseif (str_contains($tag, ' ')) {
+                    $this->errors["tags[$index]"] = 'Tag must not contain spaces';
+                }
+            }
         }
         return empty($this->errors);
     }
@@ -131,6 +148,10 @@ class Article extends BaseModel
                     $articleCategory = new ArticleCategory();
                     $articleCategory->insert(['article_id' => $this->getId(), 'category_id' => $categoryId]);
                 }
+                foreach ($this->getTagsName() as $tagTitle) {
+                    $articleTag = new ArticleTag();
+                    $articleTag->insert(['article_id' => $this->getId(), 'title' => $tagTitle]);
+                }
                 $this->pdo->commit();
             } catch (Exception $exception) {
                 $this->pdo->rollBack();
@@ -165,6 +186,14 @@ class Article extends BaseModel
                     $articleCategory->insert(['article_id' => $this->getId(), 'category_id' => $categoryId]);
                 }
 
+                $articleTag = new ArticleTag();
+
+                $newTagTitles = $this->getTagsName();
+
+                $articleTag->deleteAll(['article_id' => $this->getId()]);
+                foreach ($newTagTitles as $tagTitle) {
+                    $articleTag->insert(['article_id' => $this->getId(), 'title' => $tagTitle]);
+                }
                 $this->pdo->commit();
             } catch (Exception $exception) {
                 $this->pdo->rollBack();
@@ -179,5 +208,15 @@ class Article extends BaseModel
     public function getCategoryIds(): array
     {
         return $this->category_ids;
+    }
+
+    public function getTagsName(): array
+    {
+        return $this->tags;
+    }
+
+    public function getTags(): array
+    {
+        return $this->articleTag->findAll(['article_id' => $this->getId()]);
     }
 }
