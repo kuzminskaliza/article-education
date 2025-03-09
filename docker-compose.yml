@@ -9,6 +9,8 @@ services:
       - ./backend:/var/www/html
     depends_on:
       - php-fpm
+    networks:
+      - my_network
 
 
   php-fpm:
@@ -18,6 +20,8 @@ services:
       - ./backend:/var/www/html
     depends_on:
       - postgres
+    networks:
+      - my_network
 
   postgres:
     image: postgres:16.5
@@ -31,5 +35,11 @@ services:
       - "5433:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
+    networks:
+      - my_network
 volumes:
   pgdata:
+
+networks:
+  my_network:
+    driver: bridge
