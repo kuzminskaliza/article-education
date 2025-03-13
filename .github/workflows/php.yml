@@ -28,4 +28,4 @@ jobs:
         run: composer install --no-progress --no-interaction
 
       - name: Run PHP CodeSniffer
-        run: vendor/bin/phpcs --standard=./phpcs.xml .
+        run: vendor/bin/phpcs --standard=./phpcs.xml
