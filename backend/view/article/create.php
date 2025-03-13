@@ -89,7 +89,7 @@ use backend\model\Category;
                         $tags = $article->getTagsName();
                         $tags = !empty($tags) ? $tags : [''];
                         ?>
-                        <?php foreach ($tags as $index => $tag): ?>
+                        <?php foreach ($tags as $index => $tag) : ?>
                             <div class="input-group mb-3 tag-input">
                                 <input type="text"
                                        name="tags[<?= $index ?>]"

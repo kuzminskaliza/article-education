@@ -224,17 +224,13 @@ abstract class BaseModel implements ORMInterface, QueryBuilderInterface
 
     public function exist(array $conditions): bool
     {
-        $where = [];
-        foreach ($conditions as $key => $value) {
-            $where[] = "$key = :$key";
-        }
+        $where = array_map(static fn($key) => "$key = :$key", array_keys($conditions));
         $whereSql = implode(' AND ', $where);
-
         $query = "SELECT EXISTS(SELECT 1 FROM {$this->getTableName()} WHERE $whereSql LIMIT 1)";
         $stmt = $this->pdo->prepare($query);
         $stmt->execute($conditions);
 
-        return (bool) $stmt->fetchColumn();
+        return (bool)$stmt->fetchColumn();
     }
 
     protected function setHashFieldsData(array $data): array

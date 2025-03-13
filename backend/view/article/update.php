@@ -7,7 +7,7 @@ use backend\model\Category;
 /* @var Category $category */
 
 $categoryIds = array_map(static fn($articleCategory) => $articleCategory->getCategoryId(), $article->getCategories());
-$tags = $article->getTagsName() ?: ($article->getTags() ? array_map(fn($tag) => $tag->getTagName(), $article->getTags()) : ['']);
+$tags = $article->getTagsName() ?: ($article->getTags() ? array_map(static fn($tag) => $tag->getTagName(), $article->getTags()) : ['']);
 ?>
 
 <div class="article-form">

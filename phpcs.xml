@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <ruleset name="PSR12">
   <description>The PSR12 coding standard.</description>
+  <arg name="extensions" value="php"/>
   <rule ref="PSR12">
     <exclude-pattern>*/tests/*</exclude-pattern>
   </rule>
@@ -88,5 +89,21 @@
     <exclude name="Generic.NamingConventions.UpperCaseConstantName"/>
   </rule>
 
+  <rule ref="SlevomatCodingStandard.Commenting.ForbiddenAnnotations">
+    <properties>
+      <property name="forbiddenAnnotations" type="array">
+        <element value="@author"/>
+        <element value="@created"/>
+        <element value="@copyright"/>
+        <element value="@license"/>
+        <element value="@package"/>
+        <element value="@version"/>
+      </property>
+    </properties>
+    <severity>ignore</severity>
+  </rule>
   <file>./backend</file>
+  <file>./console</file>
+  <file>./frontend</file>
+  <exclude-pattern>./console/migration/*</exclude-pattern>
 </ruleset>
