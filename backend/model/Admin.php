@@ -101,10 +101,9 @@ class Admin extends BaseModel
             if ($admin) {
                 $_SESSION['id'] = $admin->id;
                 return true;
-            } else {
-                $this->errors['email'] = 'Email incorrect';
-                $this->errors['password'] = 'Password incorrect';
             }
+            $this->errors['email'] = 'Email incorrect';
+            $this->errors['password'] = 'Password incorrect';
         }
 
         return false;

@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <ruleset name="PSR12">
   <description>The PSR12 coding standard.</description>
+  <arg name="extensions" value="php"/>
   <rule ref="PSR12">
     <exclude-pattern>*/tests/*</exclude-pattern>
   </rule>
@@ -102,4 +103,7 @@
     <severity>ignore</severity>
   </rule>
   <file>./backend</file>
+  <file>./console</file>
+  <file>./frontend</file>
+  <exclude-pattern>./console/migration/*</exclude-pattern>
 </ruleset>
